@@ -1,0 +1,8 @@
+# virtual environment
+venv
+
+# Pycharm stuff
+.idea
+
+# Python bytecode
+__pycache__
