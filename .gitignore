@@ -6,3 +6,8 @@ venv
 
 # Python bytecode
 __pycache__
+
+# build files
+build
+dist
+fourth.egg-info
