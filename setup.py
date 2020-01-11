@@ -24,6 +24,6 @@ setuptools.setup(
         "Operating System :: OS Independent",
         "Natural Language :: English",
     ],
-    python_requires='>=3.8',
+    python_requires=">=3.8",
     keywords=["fourth four 4 datetime time date timezone"],
 )
