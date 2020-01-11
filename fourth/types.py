@@ -1,7 +1,7 @@
 from datetime import datetime, MINYEAR
 
 
-__all__ = ("LocalDatetime",)
+__all__ = ("LocalDatetime", "LocalDatetimeSubclass")
 
 
 class DateTimeBase:
@@ -65,3 +65,42 @@ class LocalDatetime(DateTimeBase):
     @classmethod
     def now_utc(cls):
         return cls(date_time=datetime.utcnow())
+
+
+class LocalDatetimeSubclass(datetime):
+    def __new__(
+        cls,
+        year,
+        month=None,
+        day=None,
+        hour=0,
+        minute=0,
+        second=0,
+        microsecond=0,
+        tzinfo=None,
+        *,
+        fold=0,
+    ):
+        return super().__new__(
+            cls, year, month, day, hour, minute, second, microsecond, fold=fold
+        )
+
+    @classmethod
+    def now(cls):
+        return super().now()
+
+    @classmethod
+    def fromtimestamp(cls, timestamp):
+        return super().fromtimestamp(timestamp)
+
+    @classmethod
+    def combine(cls, date, time):
+        return super().combine(date, time)
+
+    @classmethod
+    def fromisoformat(cls, date_string: str):
+        return super().fromisoformat(date_string).replace(tzinfo=None)
+
+    @classmethod
+    def strptime(cls, date_string, format):
+        return super().strptime(date_string, format).replace(tzinfo=None)

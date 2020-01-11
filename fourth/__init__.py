@@ -1,4 +1,4 @@
-from .types import LocalDatetime
+from .types import *
 
 
-__all__ = ("LocalDatetime",)
+__all__ = ("LocalDatetime", "LocalDatetimeSubclass")
