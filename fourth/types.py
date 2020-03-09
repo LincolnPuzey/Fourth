@@ -1,73 +1,17 @@
-from datetime import datetime, MINYEAR
+from datetime import datetime
 
 
-__all__ = ("LocalDatetime", "LocalDatetimeSubclass")
+__all__ = ("LocalDatetime", "SpanningDatetime", "UtcDatetime")
 
 
-class DateTimeBase:
-    __slots__ = ("_date_time",)
+class NoTimezoneDatetime(datetime):
+    """
+    A subclass of `datetime.datetime` that does it's best to pretend that it
+    doesn't have a `tzinfo` attribute.
+    """
 
-    @property
-    def year(self):
-        return self._date_time.year
+    __slots__ = ()
 
-    @property
-    def month(self):
-        return self._date_time.month
-
-    @property
-    def day(self):
-        return self._date_time.day
-
-    @property
-    def hour(self):
-        return self._date_time.hour
-
-    @property
-    def minute(self):
-        return self._date_time.minute
-
-    @property
-    def second(self):
-        return self._date_time.second
-
-    @property
-    def microsecond(self):
-        return self._date_time.microsecond
-
-
-class LocalDatetime(DateTimeBase):
-    def __init__(
-        self,
-        year=MINYEAR,
-        month=1,
-        day=1,
-        hour=0,
-        minute=0,
-        second=0,
-        microsecond=0,
-        *,
-        date_time: datetime = None,
-    ):
-        if date_time is None:
-            self._date_time = datetime(
-                year, month, day, hour, minute, second, microsecond,
-            )
-        else:
-            if date_time.tzinfo is not None:
-                date_time.replace(tzinfo=None)
-            self._date_time = date_time
-
-    @classmethod
-    def now(cls):
-        return cls(date_time=datetime.now())
-
-    @classmethod
-    def now_utc(cls):
-        return cls(date_time=datetime.utcnow())
-
-
-class LocalDatetimeSubclass(datetime):
     def __new__(
         cls,
         year,
@@ -81,9 +25,32 @@ class LocalDatetimeSubclass(datetime):
         *,
         fold=0,
     ):
+        if tzinfo is not None:
+            raise ValueError(f"'tzinfo' kwarg must be None.")
         return super().__new__(
             cls, year, month, day, hour, minute, second, microsecond, fold=fold
         )
+
+    def __getattribute__(self, name):
+        if name in {
+            "tzinfo",
+            "timetz",
+            "astimezone",
+            "utcoffset",
+            "dst",
+            "tzname",
+        }:
+            raise AttributeError(
+                f"'{self.__class__.__name__}' object has no attribute '{name}'"
+            )
+        return super().__getattribute__(name)
+
+    def __setattr__(self, key, value):
+        if key == "tzinfo":
+            raise AttributeError(
+                f"'{self.__class__.__name__}' object has no attribute 'tzinfo'"
+            )
+        return super().__setattr__(key, value)
 
     @classmethod
     def now(cls):
@@ -95,6 +62,8 @@ class LocalDatetimeSubclass(datetime):
 
     @classmethod
     def combine(cls, date, time):
+        if time.tzinfo is not None:
+            raise ValueError("'time.tzinfo' must be None")
         return super().combine(date, time)
 
     @classmethod
@@ -104,3 +73,31 @@ class LocalDatetimeSubclass(datetime):
     @classmethod
     def strptime(cls, date_string, format):
         return super().strptime(date_string, format).replace(tzinfo=None)
+
+    # TODO def replace(), etc
+
+
+class LocalDatetime(NoTimezoneDatetime):
+    """
+    A datetime with no timezone.
+    """
+
+    __slots__ = ()
+
+
+class SpanningDatetime(NoTimezoneDatetime):
+    """
+    A datetime that "spans" across multiple timezones.
+    """
+
+    __slots__ = ()
+
+
+class UtcDatetime(datetime):
+    """
+    A datetime in the UTC timezone.
+    """
+
+    __slots__ = ()
+
+    # TODO
