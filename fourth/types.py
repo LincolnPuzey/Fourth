@@ -63,7 +63,7 @@ class NoTimezoneDatetime(datetime):
     @classmethod
     def combine(cls, date, time):
         if time.tzinfo is not None:
-            raise ValueError("'time.tzinfo' must be None")
+            raise ValueError("time must have 'tzinfo' as None")
         return super().combine(date, time)
 
     @classmethod
