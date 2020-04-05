@@ -39,6 +39,7 @@ class NoTimezoneDatetime(datetime):
             "utcoffset",
             "dst",
             "tzname",
+            "utctimetuple",
         }:
             raise AttributeError(
                 f"'{self.__class__.__name__}' object has no attribute '{name}'"
@@ -51,6 +52,9 @@ class NoTimezoneDatetime(datetime):
                 f"'{self.__class__.__name__}' object has no attribute 'tzinfo'"
             )
         return super().__setattr__(key, value)
+
+    def __str__(self):
+        return self.isoformat(sep="T")
 
     @classmethod
     def now(cls):
@@ -74,7 +78,37 @@ class NoTimezoneDatetime(datetime):
     def strptime(cls, date_string, format):
         return super().strptime(date_string, format).replace(tzinfo=None)
 
-    # TODO def replace(), etc
+    def replace(
+        self,
+        *,
+        year: int = None,
+        month: int = None,
+        day: int = None,
+        hour: int = None,
+        minute: int = None,
+        second: int = None,
+        microsecond: int = None,
+        fold: int = None,
+    ):
+        return super().replace(
+            year, month, day, hour, minute, second, microsecond, fold=fold,
+        )
+
+    def isoformat(self, *, sep: str = "T", timespec: str = "microseconds"):
+        return super().isoformat(sep=sep, timespec=timespec)
+
+    def strftime(self, fmt: str, tzinfo=None) -> str:
+        return datetime(
+            self.year,
+            self.month,
+            self.day,
+            self.hour,
+            self.minute,
+            self.second,
+            self.microsecond,
+            tzinfo=tzinfo,
+            fold=self.fold,
+        ).strftime(fmt)
 
 
 class LocalDatetime(NoTimezoneDatetime):
