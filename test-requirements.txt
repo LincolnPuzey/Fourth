@@ -1,2 +1,3 @@
+pyflakes==2.2.0
 black==19.10b0
 freezegun==0.3.15

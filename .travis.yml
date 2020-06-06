@@ -8,5 +8,6 @@ install:
   - pip install -r test-requirements.txt
 
 script:
+  - pyflakes fourth tests setup.py
   - black --check --diff fourth tests setup.py
   - python -m unittest -v
