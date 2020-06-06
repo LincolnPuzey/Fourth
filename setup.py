@@ -1,11 +1,13 @@
 import setuptools
 
+import fourth
+
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
     name="fourth",
-    version="0.0.1",
+    version=fourth.__version__,
     author="Lincoln Puzey",
     description="A datetime library",
     long_description=long_description,
