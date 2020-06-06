@@ -1,1 +1,2 @@
+black==19.10b0
 freezegun==0.3.15
