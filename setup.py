@@ -26,6 +26,7 @@ setuptools.setup(
         "Programming Language :: Python :: 3.9"
         "Operating System :: OS Independent",
         "Natural Language :: English",
+        "Typing :: Typed",
     ],
     python_requires=">=3.8",
     keywords=["fourth four 4 datetime time date timezone"],
