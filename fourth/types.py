@@ -1,137 +1,183 @@
-from datetime import datetime
+"""
+Source code for the datetime types that Fourth provides.
+"""
+from __future__ import annotations
+
+__all__ = ("LocalDatetime", "UTCDatetime")
+
+from datetime import datetime, timezone
+from typing import Literal, Union
 
 
-__all__ = ("LocalDatetime", "SpanningDatetime", "UtcDatetime")
+FOLD = Literal[0, 1]
 
 
-class NoTimezoneDatetime(datetime):
+class BaseDatetime:
     """
-    A subclass of `datetime.datetime` that does it's best to pretend that it
-    doesn't have a `tzinfo` attribute.
+    Base class for Fourth datetime types.
+    """
+
+    _at: datetime
+
+    __slots__ = ("_at",)
+
+    def __init__(self, from_datetime: datetime, /):
+        # use object.__setattr__ to get around pseudo immutability.
+        object.__setattr__(self, "_at", from_datetime)
+
+    def __setattr__(self, name, value):
+        raise AttributeError(
+            f"'{self.__class__.__name__}' object has no attribute '{name}'"
+        )
+
+    def __delattr__(self, name):
+        raise AttributeError(
+            f"'{self.__class__.__name__}' object has no attribute '{name}'"
+        )
+
+    def __repr__(self):
+        return f"{self.__class__.__name__}({repr(self._at)})"
+
+    def __str__(self):
+        return self.isoformat(sep="T", timespec="microseconds")
+
+    @property
+    def internal_datetime(self):
+        return self._at
+
+    def isoformat(self, *, sep: str = "T", timespec: str = "microseconds"):
+        return self._at.isoformat(sep=sep, timespec=timespec)
+
+
+class LocalDatetime(BaseDatetime):
+    """
+    A local datetime with no timezone.
+
+    The internal datetime always has `tzinfo=None`
     """
 
     __slots__ = ()
 
-    def __new__(
+    def __init__(self, at: datetime):
+        if at.tzinfo is not None:
+            raise ValueError(
+                f"{self.__class__.__name__} can't be initialised with an "
+                f"aware datetime"
+            )
+
+        super().__init__(at)
+
+    @classmethod
+    def at(
         cls,
-        year,
-        month=None,
-        day=None,
-        hour=0,
-        minute=0,
-        second=0,
-        microsecond=0,
-        tzinfo=None,
         *,
-        fold=0,
+        year: int,
+        month: int,
+        day: int,
+        hour: int = 0,
+        minute: int = 0,
+        second: int = 0,
+        microsecond: int = 0,
+        fold: FOLD = 0,
     ):
-        if tzinfo is not None:
-            raise ValueError(f"'tzinfo' kwarg must be None.")
-        return super().__new__(
-            cls, year, month, day, hour, minute, second, microsecond, fold=fold
+        return cls(
+            datetime(
+                year=year,
+                month=month,
+                day=day,
+                hour=hour,
+                minute=minute,
+                second=second,
+                microsecond=microsecond,
+                tzinfo=None,
+                fold=fold,
+            )
         )
-
-    def __getattribute__(self, name):
-        if name in {
-            "tzinfo",
-            "timetz",
-            "astimezone",
-            "utcoffset",
-            "dst",
-            "tzname",
-            "utctimetuple",
-        }:
-            raise AttributeError(
-                f"'{self.__class__.__name__}' object has no attribute '{name}'"
-            )
-        return super().__getattribute__(name)
-
-    def __setattr__(self, key, value):
-        if key == "tzinfo":
-            raise AttributeError(
-                f"'{self.__class__.__name__}' object has no attribute 'tzinfo'"
-            )
-        return super().__setattr__(key, value)
-
-    def __str__(self):
-        return self.isoformat(sep="T")
 
     @classmethod
     def now(cls):
-        return super().now()
-
-    @classmethod
-    def fromtimestamp(cls, timestamp):
-        return super().fromtimestamp(timestamp)
-
-    @classmethod
-    def combine(cls, date, time):
-        if time.tzinfo is not None:
-            raise ValueError("time must have 'tzinfo' as None")
-        return super().combine(date, time)
+        return cls(datetime.now())
 
     @classmethod
     def fromisoformat(cls, date_string: str):
-        return super().fromisoformat(date_string).replace(tzinfo=None)
+        datetime_obj = datetime.fromisoformat(date_string)
+        if datetime_obj.tzinfo is not None:
+            raise ValueError("fromisoformat: date_string contained tz info")
+        return cls(datetime_obj)
 
     @classmethod
-    def strptime(cls, date_string, format):
-        return super().strptime(date_string, format).replace(tzinfo=None)
-
-    def replace(
-        self,
-        *,
-        year: int = None,
-        month: int = None,
-        day: int = None,
-        hour: int = None,
-        minute: int = None,
-        second: int = None,
-        microsecond: int = None,
-        fold: int = None,
-    ):
-        return super().replace(
-            year, month, day, hour, minute, second, microsecond, fold=fold,
-        )
-
-    def isoformat(self, *, sep: str = "T", timespec: str = "microseconds"):
-        return super().isoformat(sep=sep, timespec=timespec)
-
-    def strftime(self, fmt: str, tzinfo=None) -> str:
-        return datetime(
-            self.year,
-            self.month,
-            self.day,
-            self.hour,
-            self.minute,
-            self.second,
-            self.microsecond,
-            tzinfo=tzinfo,
-            fold=self.fold,
-        ).strftime(fmt)
+    def strptime(cls, date_string, format_string):
+        datetime_obj = datetime.strptime(date_string, format_string)
+        if datetime_obj.tzinfo is not None:
+            raise ValueError("strptime: date_string contained tz info")
+        return cls(datetime_obj)
 
 
-class LocalDatetime(NoTimezoneDatetime):
-    """
-    A datetime with no timezone.
-    """
-
-    __slots__ = ()
-
-
-class SpanningDatetime(NoTimezoneDatetime):
-    """
-    A datetime that "spans" across multiple timezones.
-    """
-
-    __slots__ = ()
-
-
-class UtcDatetime(datetime):
+class UTCDatetime(BaseDatetime):
     """
     A datetime in the UTC timezone.
+
+    The internal datetime always has `tzinfo=timezone.utc`
     """
 
     __slots__ = ()
 
-    # TODO
+    def __init__(self, at: datetime):
+        if at.tzinfo is None:
+            raise ValueError(
+                f"{self.__class__.__name__} can't be initialised with a "
+                f"naive datetime"
+            )
+
+        at = at.astimezone(timezone.utc)
+
+        super().__init__(at)
+
+    @classmethod
+    def at(
+        cls,
+        *,
+        year: int,
+        month: int,
+        day: int,
+        hour: int = 0,
+        minute: int = 0,
+        second: int = 0,
+        microsecond: int = 0,
+    ):
+        return cls(
+            datetime(
+                year=year,
+                month=month,
+                day=day,
+                hour=hour,
+                minute=minute,
+                second=second,
+                microsecond=microsecond,
+                tzinfo=timezone.utc,
+            )
+        )
+
+    @classmethod
+    def now(cls):
+        return cls(datetime.now(timezone.utc))
+
+    @classmethod
+    def fromtimestamp(cls, timestamp: Union[int, float]):
+        return cls(datetime.fromtimestamp(timestamp, timezone.utc))
+
+    @classmethod
+    def fromisoformat(cls, date_string: str):
+        datetime_obj = datetime.fromisoformat(date_string)
+        if datetime_obj.tzinfo is None:
+            raise ValueError(
+                "fromisoformat: date_string didn't contain tz info"
+            )
+        return cls(datetime_obj)
+
+    @classmethod
+    def strptime(cls, date_string, format_string):
+        datetime_obj = datetime.strptime(date_string, format_string)
+        if datetime_obj.tzinfo is None:
+            raise ValueError("strptime: date_string didn't contain tz info")
+        return cls(datetime_obj)
