@@ -1,0 +1,10 @@
+language: python
+sudo: false
+python:
+  - 3.8
+
+install:
+  - pip install -r test-requirements.txt
+
+script:
+  - python -m unittest -v
