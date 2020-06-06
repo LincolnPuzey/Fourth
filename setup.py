@@ -23,7 +23,7 @@ setuptools.setup(
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3 :: Only",
         "Programming Language :: Python :: 3.8",
-        "Programming Language :: Python :: 3.9"
+        "Programming Language :: Python :: 3.9",
         "Operating System :: OS Independent",
         "Natural Language :: English",
         "Typing :: Typed",
