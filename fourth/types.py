@@ -17,13 +17,13 @@ class BaseDatetime:
     Base class for Fourth datetime types.
     """
 
+    # Instance Attributes
+
     _at: datetime
 
     __slots__ = ("_at",)
 
-    def __init__(self, from_datetime: datetime, /):
-        # use object.__setattr__ to get around pseudo immutability.
-        object.__setattr__(self, "_at", from_datetime)
+    # Special Methods
 
     def __setattr__(self, name, value):
         raise AttributeError(
@@ -40,6 +40,14 @@ class BaseDatetime:
 
     def __str__(self):
         return self.isoformat(sep="T", timespec="microseconds")
+
+    # Constructors
+
+    def __init__(self, from_datetime: datetime, /):
+        # use object.__setattr__ to get around pseudo immutability.
+        object.__setattr__(self, "_at", from_datetime)
+
+    # Instance Properties
 
     @property
     def internal_datetime(self):
@@ -72,6 +80,8 @@ class BaseDatetime:
     @property
     def microsecond(self) -> int:
         return self._at.microsecond
+
+    # Instance Methods
 
     def isoformat(self, *, sep: str = "T", timespec: str = "microseconds"):
         return self._at.isoformat(sep=sep, timespec=timespec)
