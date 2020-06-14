@@ -203,6 +203,14 @@ class UTCDatetime(BaseDatetime):
 
         super().__init__(at)
 
+    def __eq__(self, other) -> bool:
+        if isinstance(other, UTCDatetime):
+            return other._at == self._at
+        elif isinstance(other, datetime):
+            return other.tzinfo is not None and other == self._at
+        else:
+            return False
+
     # Constructors
 
     @classmethod
