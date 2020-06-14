@@ -47,9 +47,6 @@ class BaseDatetime:
     def __str__(self) -> str:
         return self.iso_format(sep="T", timespec="microseconds")
 
-    def __eq__(self, other):
-        return isinstance(other, self.__class__) and other._at == self._at
-
     # Instance Properties
 
     @property
@@ -118,6 +115,14 @@ class LocalDatetime(BaseDatetime):
             )
 
         super().__init__(at)
+
+    def __eq__(self, other) -> bool:
+        if isinstance(other, LocalDatetime):
+            return other._at == self._at
+        elif isinstance(other, datetime):
+            return other.tzinfo is None and other == self._at
+        else:
+            return False
 
     # Constructors
 
