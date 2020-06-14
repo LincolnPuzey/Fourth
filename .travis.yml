@@ -17,3 +17,15 @@ script:
   - pyflakes fourth tests setup.py
   - black --check --diff fourth tests setup.py
   - python -m unittest
+
+deploy:
+  provider: pypi
+  username: __token__
+  password:
+    secure: yt9rjQkKwo32+Sz5tmk0c1WadJ9qzRJGN1JZVH/0a7iGJD1eHtDs40tDpSdYbEDWWgXhomFvPxeSY7KbUdWuEh8b0sfGEvR0+wVKaRTfDf+pZo5QvKdsaHWU2GtRDQlLD+p3yljPFFAdKIpQzoEkWOACu1hxNvQygVGjHWzevbBHyxUsiw8T3eYS9qwT3UoPVJq3XkcLCfoD+VI8kTVQIWa8CTC5cuYUP+iD5Hp0vzFfKv2bW9EHoAi9n/XXKMBnGbzf2oYzKBMipUZY7Do19vG2wqmmONuMYoSFc5x8zYTaOGIxQmDx+I33DZQY2T18jQqW4lCiKZrIRlJLI4HmONtykhpVgJfr19yoCCmApYrYyiCrU3ksRZDBGZ+ucahD5sNc547tuO5j5lRQIWOhBYmnFRl7Z969BrdCNy45liLYwpMJCF5/Oncy8wS9PhNjic28jpWw/Iz9D5iphx53L0H0v0tNdbnGBR1JprWMXZGQgw+rJRhZSnw01xJPDFzccT154Ezv0sCEz7K9WUTIpWIZMBlk3cUoOG8jkgeAFgi6/graYMBH4jdQveamU16P3agSQZsrW41EsHZdSUjw/QqxQcyAHN6DAOWSmVHqtVPCXq/rkt1lEnJ/JmD2b9sAkEteAZSg2DU21dQMoXA5ZQoVHTktzGHrYeuQDfsR4Kg=
+  distributions: "sdist bdist_wheel"
+  skip_existing: true
+  on:
+    branch: master
+    tags: true
+  edge: true  # opt in to dpl v2
