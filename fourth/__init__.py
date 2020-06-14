@@ -11,6 +11,7 @@ TODO feature list:
 * set up coverage on CI
 * setup changelog - semantic version statement
 * Docs
+
 """
 from __future__ import annotations
 
