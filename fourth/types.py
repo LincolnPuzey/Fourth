@@ -6,10 +6,13 @@ from __future__ import annotations
 __all__ = ("LocalDatetime", "UTCDatetime")
 
 from datetime import datetime, timezone
-from typing import ClassVar, Literal, Union
+from typing import Any, ClassVar, Literal, NoReturn, Union
 
 
 FOLD = Literal[0, 1]
+TIMESPEC = Literal[
+    "auto", "hours", "minutes", "seconds", "milliseconds", "microseconds"
+]
 
 
 class BaseDatetime:
@@ -25,32 +28,30 @@ class BaseDatetime:
 
     # Special Methods
 
-    def __setattr__(self, name, value):
-        raise AttributeError(
-            f"'{self.__class__.__name__}' object has no attribute '{name}'"
-        )
-
-    def __delattr__(self, name):
-        raise AttributeError(
-            f"'{self.__class__.__name__}' object has no attribute '{name}'"
-        )
-
-    def __repr__(self):
-        return f"{self.__class__.__name__}({repr(self._at)})"
-
-    def __str__(self):
-        return self.isoformat(sep="T", timespec="microseconds")
-
-    # Constructors
-
-    def __init__(self, from_datetime: datetime, /):
+    def __init__(self, from_datetime: datetime, /) -> None:
         # use object.__setattr__ to get around pseudo immutability.
         object.__setattr__(self, "_at", from_datetime)
+
+    def __setattr__(self, name: str, value: Any) -> NoReturn:
+        raise AttributeError(
+            f"'{self.__class__.__name__}' object has no attribute '{name}'"
+        )
+
+    def __delattr__(self, name: str) -> NoReturn:
+        raise AttributeError(
+            f"'{self.__class__.__name__}' object has no attribute '{name}'"
+        )
+
+    def __repr__(self) -> str:
+        return f"{self.__class__.__name__}({repr(self._at)})"
+
+    def __str__(self) -> str:
+        return self.isoformat(sep="T", timespec="microseconds")
 
     # Instance Properties
 
     @property
-    def internal_datetime(self):
+    def internal_datetime(self) -> datetime:
         return self._at
 
     @property
@@ -83,7 +84,9 @@ class BaseDatetime:
 
     # Instance Methods
 
-    def isoformat(self, *, sep: str = "T", timespec: str = "microseconds"):
+    def isoformat(
+        self, *, sep: str = "T", timespec: TIMESPEC = "microseconds"
+    ) -> str:
         return self._at.isoformat(sep=sep, timespec=timespec)
 
 
@@ -103,9 +106,9 @@ class LocalDatetime(BaseDatetime):
 
     __slots__ = ()
 
-    # Constructors
+    # Special Methods
 
-    def __init__(self, at: datetime):
+    def __init__(self, at: datetime) -> None:
         if at.tzinfo is not None:
             raise ValueError(
                 f"{self.__class__.__name__} can't be initialised with an "
@@ -113,6 +116,8 @@ class LocalDatetime(BaseDatetime):
             )
 
         super().__init__(at)
+
+    # Constructors
 
     @classmethod
     def at(
@@ -126,7 +131,7 @@ class LocalDatetime(BaseDatetime):
         second: int = 0,
         microsecond: int = 0,
         fold: FOLD = 0,
-    ):
+    ) -> LocalDatetime:
         return cls(
             datetime(
                 year=year,
@@ -142,18 +147,18 @@ class LocalDatetime(BaseDatetime):
         )
 
     @classmethod
-    def now(cls):
+    def now(cls) -> LocalDatetime:
         return cls(datetime.now())
 
     @classmethod
-    def fromisoformat(cls, date_string: str):
+    def fromisoformat(cls, date_string: str) -> LocalDatetime:
         datetime_obj = datetime.fromisoformat(date_string)
         if datetime_obj.tzinfo is not None:
             raise ValueError("fromisoformat: date_string contained tz info")
         return cls(datetime_obj)
 
     @classmethod
-    def strptime(cls, date_string, format_string):
+    def strptime(cls, date_string: str, format_string: str) -> LocalDatetime:
         datetime_obj = datetime.strptime(date_string, format_string)
         if datetime_obj.tzinfo is not None:
             raise ValueError("strptime: date_string contained tz info")
@@ -180,9 +185,9 @@ class UTCDatetime(BaseDatetime):
 
     __slots__ = ()
 
-    # Constructors
+    # Special Methods
 
-    def __init__(self, at: datetime):
+    def __init__(self, at: datetime) -> None:
         if at.tzinfo is None:
             raise ValueError(
                 f"{self.__class__.__name__} can't be initialised with a "
@@ -192,6 +197,8 @@ class UTCDatetime(BaseDatetime):
         at = at.astimezone(timezone.utc)
 
         super().__init__(at)
+
+    # Constructors
 
     @classmethod
     def at(
@@ -204,7 +211,7 @@ class UTCDatetime(BaseDatetime):
         minute: int = 0,
         second: int = 0,
         microsecond: int = 0,
-    ):
+    ) -> UTCDatetime:
         return cls(
             datetime(
                 year=year,
@@ -219,15 +226,15 @@ class UTCDatetime(BaseDatetime):
         )
 
     @classmethod
-    def now(cls):
+    def now(cls) -> UTCDatetime:
         return cls(datetime.now(timezone.utc))
 
     @classmethod
-    def fromtimestamp(cls, timestamp: Union[int, float]):
+    def fromtimestamp(cls, timestamp: Union[int, float]) -> UTCDatetime:
         return cls(datetime.fromtimestamp(timestamp, timezone.utc))
 
     @classmethod
-    def fromisoformat(cls, date_string: str):
+    def fromisoformat(cls, date_string: str) -> UTCDatetime:
         datetime_obj = datetime.fromisoformat(date_string)
         if datetime_obj.tzinfo is None:
             raise ValueError(
@@ -236,7 +243,7 @@ class UTCDatetime(BaseDatetime):
         return cls(datetime_obj)
 
     @classmethod
-    def strptime(cls, date_string, format_string):
+    def strptime(cls, date_string: str, format_string: str) -> UTCDatetime:
         datetime_obj = datetime.strptime(date_string, format_string)
         if datetime_obj.tzinfo is None:
             raise ValueError("strptime: date_string didn't contain tz info")
