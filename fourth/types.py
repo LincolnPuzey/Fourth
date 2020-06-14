@@ -47,6 +47,9 @@ class BaseDatetime:
     def __str__(self) -> str:
         return self.iso_format(sep="T", timespec="microseconds")
 
+    def __eq__(self, other):
+        return isinstance(other, self.__class__) and other._at == self._at
+
     # Instance Properties
 
     @property
