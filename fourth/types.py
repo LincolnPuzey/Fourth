@@ -45,6 +45,34 @@ class BaseDatetime:
     def internal_datetime(self):
         return self._at
 
+    @property
+    def year(self) -> int:
+        return self._at.year
+
+    @property
+    def month(self) -> int:
+        return self._at.month
+
+    @property
+    def day(self) -> int:
+        return self._at.day
+
+    @property
+    def hour(self) -> int:
+        return self._at.hour
+
+    @property
+    def minute(self) -> int:
+        return self._at.minute
+
+    @property
+    def second(self) -> int:
+        return self._at.second
+
+    @property
+    def microsecond(self) -> int:
+        return self._at.microsecond
+
     def isoformat(self, *, sep: str = "T", timespec: str = "microseconds"):
         return self._at.isoformat(sep=sep, timespec=timespec)
 
