@@ -16,4 +16,4 @@ install:
 script:
   - pyflakes fourth tests setup.py
   - black --check --diff fourth tests setup.py
-  - python -m unittest -v
+  - python -m unittest
