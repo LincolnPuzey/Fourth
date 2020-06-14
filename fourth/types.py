@@ -45,7 +45,7 @@ class BaseDatetime:
         return f"{self.__class__.__name__}({repr(self._at)})"
 
     def __str__(self) -> str:
-        return self.isoformat(sep="T", timespec="microseconds")
+        return self.iso_format(sep="T", timespec="microseconds")
 
     # Instance Properties
 
@@ -83,7 +83,7 @@ class BaseDatetime:
 
     # Instance Methods
 
-    def isoformat(
+    def iso_format(
         self, *, sep: str = "T", timespec: TIMESPEC = "microseconds"
     ) -> str:
         return self._at.isoformat(sep=sep, timespec=timespec)
@@ -148,7 +148,7 @@ class LocalDatetime(BaseDatetime):
         return cls(datetime.now())
 
     @classmethod
-    def fromisoformat(cls, date_string: str) -> LocalDatetime:
+    def from_iso_format(cls, date_string: str) -> LocalDatetime:
         datetime_obj = datetime.fromisoformat(date_string)
         if datetime_obj.tzinfo is not None:
             raise ValueError("fromisoformat: date_string contained tz info")
@@ -227,11 +227,11 @@ class UTCDatetime(BaseDatetime):
         return cls(datetime.now(timezone.utc))
 
     @classmethod
-    def fromtimestamp(cls, timestamp: Union[int, float]) -> UTCDatetime:
+    def from_timestamp(cls, timestamp: Union[int, float]) -> UTCDatetime:
         return cls(datetime.fromtimestamp(timestamp, timezone.utc))
 
     @classmethod
-    def fromisoformat(cls, date_string: str) -> UTCDatetime:
+    def from_iso_format(cls, date_string: str) -> UTCDatetime:
         datetime_obj = datetime.fromisoformat(date_string)
         if datetime_obj.tzinfo is None:
             raise ValueError(
