@@ -9,7 +9,6 @@ from datetime import datetime, timezone
 from typing import Any, ClassVar, Literal, NoReturn, Union
 
 
-FOLD = Literal[0, 1]
 TIMESPEC = Literal[
     "auto", "hours", "minutes", "seconds", "milliseconds", "microseconds"
 ]
@@ -130,7 +129,6 @@ class LocalDatetime(BaseDatetime):
         minute: int = 0,
         second: int = 0,
         microsecond: int = 0,
-        fold: FOLD = 0,
     ) -> LocalDatetime:
         return cls(
             datetime(
@@ -142,7 +140,6 @@ class LocalDatetime(BaseDatetime):
                 second=second,
                 microsecond=microsecond,
                 tzinfo=None,
-                fold=fold,
             )
         )
 
