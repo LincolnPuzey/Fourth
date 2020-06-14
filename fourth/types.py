@@ -6,7 +6,7 @@ from __future__ import annotations
 __all__ = ("LocalDatetime", "UTCDatetime")
 
 from datetime import datetime, timezone
-from typing import Literal, Union
+from typing import ClassVar, Literal, Union
 
 
 FOLD = Literal[0, 1]
@@ -94,7 +94,16 @@ class LocalDatetime(BaseDatetime):
     The internal datetime always has `tzinfo=None`
     """
 
+    # Class Attributes
+
+    min: ClassVar[LocalDatetime]
+    max: ClassVar[LocalDatetime]
+
+    # Instance Attributes
+
     __slots__ = ()
+
+    # Constructors
 
     def __init__(self, at: datetime):
         if at.tzinfo is not None:
@@ -151,6 +160,10 @@ class LocalDatetime(BaseDatetime):
         return cls(datetime_obj)
 
 
+LocalDatetime.min = LocalDatetime(datetime.min)
+LocalDatetime.max = LocalDatetime(datetime.max)
+
+
 class UTCDatetime(BaseDatetime):
     """
     A datetime in the UTC timezone.
@@ -158,7 +171,16 @@ class UTCDatetime(BaseDatetime):
     The internal datetime always has `tzinfo=timezone.utc`
     """
 
+    # Class Attributes
+
+    min: ClassVar[UTCDatetime]
+    max: ClassVar[UTCDatetime]
+
+    # Instance Attributes
+
     __slots__ = ()
+
+    # Constructors
 
     def __init__(self, at: datetime):
         if at.tzinfo is None:
@@ -219,3 +241,7 @@ class UTCDatetime(BaseDatetime):
         if datetime_obj.tzinfo is None:
             raise ValueError("strptime: date_string didn't contain tz info")
         return cls(datetime_obj)
+
+
+UTCDatetime.min = UTCDatetime(datetime.min.replace(tzinfo=timezone.utc))
+UTCDatetime.max = UTCDatetime(datetime.max.replace(tzinfo=timezone.utc))
