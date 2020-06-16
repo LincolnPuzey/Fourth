@@ -14,7 +14,7 @@ TODO feature list:
 """
 from __future__ import annotations
 
-__version__ = "0.0.5"
+__version__ = "0.0.6"
 
 __all__ = ("LocalDatetime", "UTCDatetime")
 
