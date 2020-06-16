@@ -9,11 +9,11 @@ setuptools.setup(
     name="fourth",
     version=fourth.__version__,
     author="Lincoln Puzey",
+    author_email="lincoln@puzey.dev",
     description="A datetime library",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/LincolnPuzey/Fourth",
-    license="MIT License",
     packages=["fourth"],
     classifiers=[
         "Development Status :: 2 - Pre-Alpha",
