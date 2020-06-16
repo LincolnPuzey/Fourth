@@ -26,6 +26,5 @@ deploy:
   distributions: "sdist bdist_wheel"
   skip_existing: true
   on:
-    branch: master
     tags: true
   edge: true  # opt in to dpl v2
