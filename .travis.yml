@@ -24,4 +24,3 @@ deploy:
   on:
     tags: true
     repo: LincolnPuzey/Fourth
-  edge: true  # opt in to dpl v2
