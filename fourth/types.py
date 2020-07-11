@@ -162,6 +162,11 @@ class LocalDatetime(BaseDatetime):
     # Special Methods
 
     def __init__(self, at: datetime) -> None:
+        """
+        Initialise a LocalDatetime from a naive datetime.datetime instance.
+
+        :param at: A naive datetime.datetime instance for this LocalDatetime.
+        """
         if at.tzinfo is not None:
             raise ValueError(
                 "LocalDatetime can't be initialised with an aware datetime",
