@@ -145,7 +145,7 @@ class BaseDatetime(metaclass=ABCMeta):
 
 class LocalDatetime(BaseDatetime):
     """
-    A local datetime with no timezone.
+    A local Datetime with no timezone.
 
     The internal datetime always has `tzinfo=None`
     """
@@ -236,7 +236,7 @@ LocalDatetime.max = LocalDatetime(datetime.max)
 
 class UTCDatetime(BaseDatetime):
     """
-    A datetime in the UTC timezone.
+    A Datetime in the UTC timezone.
 
     The internal datetime always has `tzinfo=timezone.utc`
     """
