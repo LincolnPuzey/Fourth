@@ -12,3 +12,7 @@ __pycache__
 build
 dist
 fourth.egg-info
+
+# coverage files
+.coverage
+coverage.xml
