@@ -12,7 +12,10 @@ install:
 script:
   - pyflakes fourth tests setup.py
   - black --check --diff fourth tests setup.py
-  - python -m unittest
+  - coverage run -m unittest
+
+after_success:
+  - codecov
 
 deploy:
   provider: pypi
