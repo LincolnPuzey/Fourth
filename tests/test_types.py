@@ -3,7 +3,7 @@ from __future__ import annotations
 from datetime import datetime, timedelta, timezone
 from unittest import TestCase
 
-from fourth import LocalDatetime
+from fourth import LocalDatetime, UTCDatetime
 from fourth.types import BaseDatetime
 
 
@@ -71,14 +71,17 @@ class LocalDatetimeTests(TestCase):
     def test_eq(self):
         foo = LocalDatetime.at(year=2020, month=1, day=1)
 
-        self.assertFalse(foo == 1)
-        self.assertFalse(foo == "foo")
-        self.assertFalse(foo == datetime(2020, 1, 3))
-        self.assertFalse(foo == datetime(2020, 1, 1, tzinfo=timezone.utc))
-        self.assertFalse(foo == LocalDatetime.at(year=2020, month=1, day=2))
+        # use assertIs to check that __eq__ is returning actual True/False,
+        # and not just a truthy/falsey value
+        self.assertIs(False, foo == 1)
+        self.assertIs(False, foo == "foo")
+        self.assertIs(False, foo == datetime(2020, 1, 3))
+        self.assertIs(False, foo == datetime(2020, 1, 1, tzinfo=timezone.utc))
+        self.assertIs(False, foo == LocalDatetime.at(2020, 1, 2))
+        self.assertIs(False, foo == UTCDatetime.at(year=2020, month=1, day=1))
 
-        self.assertTrue(foo == datetime(2020, 1, 1))
-        self.assertTrue(foo == LocalDatetime.at(year=2020, month=1, day=1))
+        self.assertIs(True, foo == datetime(2020, 1, 1))
+        self.assertIs(True, foo == LocalDatetime.at(2020, 1, 1))
 
     def test_at_constructor_minimal_args(self):
         foo = LocalDatetime.at(year=2020, month=1, day=2)
@@ -105,12 +108,16 @@ class LocalDatetimeTests(TestCase):
     def test_at_constructor_minimal_positional_args(self):
         foo = LocalDatetime.at(2010, 3, 5)
 
+        self.assertIsInstance(foo, LocalDatetime)
         self.assertEqual(foo._at, datetime(2010, 3, 5))
+        self.assertIsNone(foo._at.tzinfo)
 
     def test_at_constructor_all_positional_args(self):
         foo = LocalDatetime.at(2010, 3, 5, 14, 44, 55, 123456)
 
+        self.assertIsInstance(foo, LocalDatetime)
         self.assertEqual(foo._at, datetime(2010, 3, 5, 14, 44, 55, 123456))
+        self.assertIsNone(foo._at.tzinfo)
 
     def test_now_constructor(self):
         now = datetime.now()

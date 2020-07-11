@@ -119,6 +119,13 @@ class LocalDatetime(BaseDatetime):
         super().__init__(at)
 
     def __eq__(self, other) -> bool:
+        """
+        A LocalDateTime can be equal to other LocalDateTime instances and
+        datetime.datetime instances that are naive.
+
+        :param other: The object to check if equal to.
+        :return: True if equal.
+        """
         if isinstance(other, LocalDatetime):
             return other._at == self._at
         elif isinstance(other, datetime):
