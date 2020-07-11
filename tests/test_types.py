@@ -67,11 +67,16 @@ class LocalDatetimeTests(TestCase):
             delattr(foo, "_at")
 
     def test_repr(self):
-        foo = LocalDatetime.at(year=2020, month=1, day=1)
+        foo = LocalDatetime.at(2020, 11, 12, 8, 36, 42, 433677)
 
         self.assertEqual(
-            repr(foo), "LocalDatetime(datetime.datetime(2020, 1, 1, 0, 0))",
+            repr(foo), "LocalDatetime.at(2020, 11, 12, 8, 36, 42, 433677)",
         )
+
+    def test_eval_repr(self):
+        foo = LocalDatetime.at(2020, 9, 20, 4, 56, 43, 333677)
+
+        self.assertEqual(foo, eval(repr(foo)))
 
     def test_str(self):
         foo = LocalDatetime.at(year=2020, month=1, day=1)

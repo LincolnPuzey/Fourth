@@ -76,7 +76,16 @@ class BaseDatetime(metaclass=ABCMeta):
 
         :return: The representation of the Datetime.
         """
-        return f"{self.__class__.__name__}({repr(self._at)})"
+        return "{}.at({}, {}, {}, {}, {}, {}, {})".format(
+            self.__class__.__name__,
+            self._at.year,
+            self._at.month,
+            self._at.day,
+            self._at.hour,
+            self._at.minute,
+            self._at.second,
+            self._at.microsecond,
+        )
 
     def __str__(self) -> str:
         """
