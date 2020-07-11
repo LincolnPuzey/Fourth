@@ -18,6 +18,11 @@ TIMESPEC = Literal[
 class BaseDatetime(metaclass=ABCMeta):
     """
     Abstract base class for Fourth datetime types.
+
+    Contains a single real attribute `_at` which is a datetime.datetime
+    instance which the Datetime is "at".
+
+    Implements __setattr__ and __delattr__ to make instances pseudo-immutable.
     """
 
     # Instance Attributes
@@ -29,24 +34,56 @@ class BaseDatetime(metaclass=ABCMeta):
     # Special Methods
 
     @abstractmethod
-    def __init__(self, from_datetime: datetime, /) -> None:
+    def __init__(self, from_datetime: datetime) -> None:
+        """
+        Set the _at attribute to the datetime we are initialising from.
+
+        Subclasses should implement some validation of from_datetime before
+        passing it here.
+
+        :param from_datetime: The datetime to initialise from.
+        """
         # use object.__setattr__ to get around pseudo immutability.
         object.__setattr__(self, "_at", from_datetime)
 
     def __setattr__(self, name: str, value: Any) -> NoReturn:
+        """
+        Setting attributes is disallowed for pseudo-immutability.
+
+        :param name: The name of the attribute being set.
+        :param value: The value to set the attribute to.
+        :raises AttributeError: Always raised.
+        """
         raise AttributeError(
             f"'{self.__class__.__name__}' object has no attribute '{name}'"
         )
 
     def __delattr__(self, name: str) -> NoReturn:
+        """
+        Deleting attributes is disallowed for pseudo-immutability.
+
+        :param name: The name of the attribute being deleted.
+        :raises AttributeError: Always raised.
+        """
         raise AttributeError(
             f"'{self.__class__.__name__}' object has no attribute '{name}'"
         )
 
     def __repr__(self) -> str:
+        """
+        Construct a command-line representation of the Datetime.
+        Should be able to eval() this and get back an identical instance.
+
+        :return: The representation of the Datetime.
+        """
         return f"{self.__class__.__name__}({repr(self._at)})"
 
     def __str__(self) -> str:
+        """
+        Construct a string representation of the Datetime.
+
+        :return: An ISO format string representation of the Datetime.
+        """
         return self.iso_format(sep="T", timespec="microseconds")
 
     # Instance Properties
@@ -88,6 +125,16 @@ class BaseDatetime(metaclass=ABCMeta):
     def iso_format(
         self, *, sep: str = "T", timespec: TIMESPEC = "microseconds"
     ) -> str:
+        """
+        Construct an ISO 8601 format string of the Datetime.
+
+        :param sep: Character to separate the date and time components.
+        :param timespec: How to format the time component.
+            Has the same meaning and available values as datetime.isoformat().
+            Defaults to `"microseconds"` since that gives the most information
+            and is the most consistent.
+        :return: The ISO 8601 format string representation of the Datetime.
+        """
         return self._at.isoformat(sep=sep, timespec=timespec)
 
 
