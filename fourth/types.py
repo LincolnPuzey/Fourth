@@ -118,6 +118,15 @@ class BaseDatetime(metaclass=ABCMeta):
 
     # Instance Methods
 
+    def as_datetime(self) -> datetime:
+        """
+        Return a python standard library datetime.datetime instance
+        corresponding to this Datetime.
+
+        :return: A datetime.datetime instance.
+        """
+        return self._at
+
     def iso_format(
         self, *, sep: str = "T", timespec: TIMESPEC = "microseconds"
     ) -> str:

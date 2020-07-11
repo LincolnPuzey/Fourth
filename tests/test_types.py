@@ -173,6 +173,13 @@ class LocalDatetimeTests(TestCase):
         self.assertEqual(foo.second, 33)
         self.assertEqual(foo.microsecond, 123)
 
+    def test_as_datetime(self):
+        foo = LocalDatetime.at(2020, 1, 1, 22, 33, 52, 333444)
+
+        self.assertEqual(
+            foo.as_datetime(), datetime(2020, 1, 1, 22, 33, 52, 333444)
+        )
+
     def test_iso_format(self):
         foo = LocalDatetime.at(year=2020, month=1, day=1)
 
