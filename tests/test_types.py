@@ -185,3 +185,33 @@ class LocalDatetimeTests(TestCase):
         self.assertEqual(
             foo.iso_format(sep=" ", timespec="auto"), "2020-01-01 00:00:00",
         )
+
+
+class UTCDatetimeTests(TestCase):
+    def test_class_attributes(self):
+        self.assertTrue(hasattr(UTCDatetime, "min"))
+        self.assertEqual(
+            UTCDatetime.min,
+            UTCDatetime(datetime.min.replace(tzinfo=timezone.utc)),
+        )
+        self.assertTrue(hasattr(UTCDatetime, "max"))
+        self.assertEqual(
+            UTCDatetime.max,
+            UTCDatetime(datetime.max.replace(tzinfo=timezone.utc)),
+        )
+
+    def test_init(self):
+        now = datetime.now(timezone.utc)
+        utc_now = UTCDatetime(now)
+
+        self.assertIsInstance(utc_now, UTCDatetime)
+        self.assertEqual(now, utc_now._at)
+
+    def test_init_exceptions(self):
+        now_naive = datetime.now()
+
+        with self.assertRaisesRegex(
+            ValueError,
+            r"^UTCDatetime can't be initialised with a naive datetime$",
+        ):
+            UTCDatetime(now_naive)
