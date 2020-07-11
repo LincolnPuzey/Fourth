@@ -18,9 +18,14 @@ class BaseDatetimeTests(TestCase):
 class LocalDatetimeTests(TestCase):
     def test_class_attributes(self):
         self.assertTrue(hasattr(LocalDatetime, "min"))
-        self.assertEqual(LocalDatetime.min, LocalDatetime(datetime.min))
+        self.assertEqual(
+            LocalDatetime.min, LocalDatetime.at(1, 1, 1, 0, 0, 0, 0),
+        )
         self.assertTrue(hasattr(LocalDatetime, "max"))
-        self.assertEqual(LocalDatetime.max, LocalDatetime(datetime.max))
+        self.assertEqual(
+            LocalDatetime.max,
+            LocalDatetime.at(9999, 12, 31, 23, 59, 59, 999999),
+        )
 
     def test_init(self):
         now = datetime.now()
@@ -190,14 +195,10 @@ class LocalDatetimeTests(TestCase):
 class UTCDatetimeTests(TestCase):
     def test_class_attributes(self):
         self.assertTrue(hasattr(UTCDatetime, "min"))
-        self.assertEqual(
-            UTCDatetime.min,
-            UTCDatetime(datetime.min.replace(tzinfo=timezone.utc)),
-        )
+        self.assertEqual(UTCDatetime.min, UTCDatetime.at(1, 1, 1, 0, 0, 0, 0))
         self.assertTrue(hasattr(UTCDatetime, "max"))
         self.assertEqual(
-            UTCDatetime.max,
-            UTCDatetime(datetime.max.replace(tzinfo=timezone.utc)),
+            UTCDatetime.max, UTCDatetime.at(9999, 12, 31, 23, 59, 59, 999999),
         )
 
     def test_init(self):
