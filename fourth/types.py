@@ -131,7 +131,6 @@ class LocalDatetime(BaseDatetime):
     @classmethod
     def at(
         cls,
-        *,
         year: int,
         month: int,
         day: int,

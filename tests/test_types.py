@@ -102,6 +102,16 @@ class LocalDatetimeTests(TestCase):
         self.assertEqual(foo._at, datetime(2020, 1, 2, 3, 4, 5, 6))
         self.assertIsNone(foo._at.tzinfo)
 
+    def test_at_constructor_minimal_positional_args(self):
+        foo = LocalDatetime.at(2010, 3, 5)
+
+        self.assertEqual(foo._at, datetime(2010, 3, 5))
+
+    def test_at_constructor_all_positional_args(self):
+        foo = LocalDatetime.at(2010, 3, 5, 14, 44, 55, 123456)
+
+        self.assertEqual(foo._at, datetime(2010, 3, 5, 14, 44, 55, 123456))
+
     def test_now_constructor(self):
         now = datetime.now()
         local_now = LocalDatetime.now()
