@@ -78,7 +78,7 @@ class LocalDatetimeTests(TestCase):
         self.assertIs(False, foo == datetime(2020, 1, 3))
         self.assertIs(False, foo == datetime(2020, 1, 1, tzinfo=timezone.utc))
         self.assertIs(False, foo == LocalDatetime.at(2020, 1, 2))
-        self.assertIs(False, foo == UTCDatetime.at(year=2020, month=1, day=1))
+        self.assertIs(False, foo == UTCDatetime.at(2020, 1, 1))
 
         self.assertIs(True, foo == datetime(2020, 1, 1))
         self.assertIs(True, foo == LocalDatetime.at(2020, 1, 1))
