@@ -155,15 +155,7 @@ class LocalDatetimeTests(TestCase):
             )
 
     def test_properties(self):
-        foo = LocalDatetime.at(
-            year=2020,
-            month=2,
-            day=3,
-            hour=14,
-            minute=44,
-            second=33,
-            microsecond=123,
-        )
+        foo = LocalDatetime.at(2020, 2, 3, 14, 44, 33, 123)
 
         self.assertEqual(foo.year, 2020)
         self.assertEqual(foo.month, 2)
