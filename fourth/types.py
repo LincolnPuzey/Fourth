@@ -257,6 +257,12 @@ class UTCDatetime(BaseDatetime):
     # Special Methods
 
     def __init__(self, at: datetime) -> None:
+        """
+        Initialise a UTCDatetime from an aware datetime.datetime instance.
+
+        :param at: An aware datetime.datetime instance for this UTCDatetime.
+        :raises ValueError: When the `at` argument is naive.
+        """
         if at.tzinfo is None:
             raise ValueError(
                 "UTCDatetime can't be initialised with a naive datetime",
@@ -267,6 +273,13 @@ class UTCDatetime(BaseDatetime):
         super().__init__(at)
 
     def __eq__(self, other) -> bool:
+        """
+        A UTCDateTime can be equal to other UTCDateTime instances and
+        datetime.datetime instances that are aware.
+
+        :param other: The object to check if equal to.
+        :return: True if equal.
+        """
         if isinstance(other, UTCDatetime):
             return other._at == self._at
         elif isinstance(other, datetime):
@@ -287,6 +300,21 @@ class UTCDatetime(BaseDatetime):
         second: int = 0,
         microsecond: int = 0,
     ) -> UTCDatetime:
+        """
+        Return a new UTCDatetime at the specified time.
+
+        The year, month and day arguments are required.
+        All arguments must be integers.
+
+        :param year:
+        :param month:
+        :param day:
+        :param hour:
+        :param minute:
+        :param second:
+        :param microsecond:
+        :return: A UTCDatetime instance at the specified time.
+        """
         return cls(
             datetime(
                 year=year,
@@ -302,14 +330,44 @@ class UTCDatetime(BaseDatetime):
 
     @classmethod
     def now(cls) -> UTCDatetime:
+        """
+        Return a new UTCDatetime instance for the current UTC date and time.
+
+        :return: A UTCDatetime instance for the current UTC date and time.
+        """
         return cls(datetime.now(timezone.utc))
 
     @classmethod
     def from_timestamp(cls, timestamp: Union[int, float]) -> UTCDatetime:
+        """
+        Return a new UTCDatetime instance corresponding to the POSIX timestamp.
+
+        This method is only available on UTCDatetime since POSIX timestamps are
+        inherently 'in' the UTC timezone.
+        Constructing a LocalDatetime from a POSIX timestamp would result in a
+        loss of data/context.
+
+        :param timestamp: The POSIX timestamp.
+        :return: The corresponding UTCDatetime instance.
+        """
         return cls(datetime.fromtimestamp(timestamp, timezone.utc))
 
     @classmethod
     def from_iso_format(cls, date_string: str) -> UTCDatetime:
+        """
+        Return a new UTCDatetime instance corresponding to the ISO 8601
+        formatted datetime string.
+
+        The datetime string must contain some timezone information, so the date
+        and time can be converted to UTC.
+
+        This is intended to be the inverse of UTCDatetime.iso_format().
+        Parsing Arbitrary ISO 8601 strings is not supported.
+
+        :param date_string: The ISO 8601 formatted datetime string.
+        :return: The corresponding UTCDatetime instance.
+        :raises ValueError: When the datetime string doesn't contain tz info.
+        """
         datetime_obj = datetime.fromisoformat(date_string)
         if datetime_obj.tzinfo is None:
             raise ValueError(
@@ -319,6 +377,20 @@ class UTCDatetime(BaseDatetime):
 
     @classmethod
     def strptime(cls, date_string: str, format_string: str) -> UTCDatetime:
+        """
+        Returns a new UTCDatetime instance corresponding to the datetime string
+        after being parsed according to the format string.
+
+        Uses datetime.datetime.strptime to parse the strings.
+
+        The datetime and format strings must have a timezone component so that
+        the date and time can be converted to UTC.
+
+        :param date_string: The datetime string.
+        :param format_string: The format string.
+        :return: The corresponding UTCDatetime instance.
+        :raises ValueError: When the strings don't have a timezone component.
+        """
         datetime_obj = datetime.strptime(date_string, format_string)
         if datetime_obj.tzinfo is None:
             raise ValueError("strptime: date_string didn't contain tz info")
