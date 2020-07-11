@@ -9,6 +9,7 @@ TODO feature list:
 * future imports
 * full test suite
 * set up coverage on CI
+* type checking on CI?
 * setup changelog - semantic version statement
 * Docs
 """
