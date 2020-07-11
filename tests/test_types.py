@@ -165,9 +165,6 @@ class LocalDatetimeTests(TestCase):
             microsecond=123,
         )
 
-        self.assertEqual(
-            foo.internal_datetime, datetime(2020, 2, 3, 14, 44, 33, 123)
-        )
         self.assertEqual(foo.year, 2020)
         self.assertEqual(foo.month, 2)
         self.assertEqual(foo.day, 3)

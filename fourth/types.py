@@ -89,10 +89,6 @@ class BaseDatetime(metaclass=ABCMeta):
     # Instance Properties
 
     @property
-    def internal_datetime(self) -> datetime:
-        return self._at
-
-    @property
     def year(self) -> int:
         return self._at.year
 
