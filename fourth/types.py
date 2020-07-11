@@ -3,8 +3,9 @@ Source code for the datetime types that Fourth provides.
 """
 from __future__ import annotations
 
-__all__ = ("LocalDatetime", "UTCDatetime")
+__all__ = ("BaseDatetime", "LocalDatetime", "UTCDatetime")
 
+from abc import ABCMeta, abstractmethod
 from datetime import datetime, timezone
 from typing import Any, ClassVar, Literal, NoReturn, Union
 
@@ -14,9 +15,9 @@ TIMESPEC = Literal[
 ]
 
 
-class BaseDatetime:
+class BaseDatetime(metaclass=ABCMeta):
     """
-    Base class for Fourth datetime types.
+    Abstract base class for Fourth datetime types.
     """
 
     # Instance Attributes
@@ -27,6 +28,7 @@ class BaseDatetime:
 
     # Special Methods
 
+    @abstractmethod
     def __init__(self, from_datetime: datetime, /) -> None:
         # use object.__setattr__ to get around pseudo immutability.
         object.__setattr__(self, "_at", from_datetime)
