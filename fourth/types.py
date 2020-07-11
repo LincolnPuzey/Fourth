@@ -86,6 +86,29 @@ class BaseDatetime(metaclass=ABCMeta):
         """
         return self.iso_format(sep="T", timespec="microseconds")
 
+    # Constructors
+
+    @classmethod
+    @abstractmethod
+    def at(
+        cls,
+        year: int,
+        month: int,
+        day: int,
+        hour: int = 0,
+        minute: int = 0,
+        second: int = 0,
+        microsecond: int = 0,
+    ) -> NoReturn:
+        """
+        Return a new instance at the specified date and time.
+
+        Subclasses must implement this method.
+        """
+        raise NotImplementedError(
+            f"{cls.__name__} does not provide an implementation of at()"
+        )
+
     # Instance Properties
 
     @property

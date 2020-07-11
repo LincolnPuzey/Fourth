@@ -14,6 +14,13 @@ class BaseDatetimeTests(TestCase):
         ):
             BaseDatetime(datetime.now())
 
+    def test_at_not_implemented(self):
+        with self.assertRaisesRegex(
+            NotImplementedError,
+            r"^BaseDatetime does not provide an implementation of at\(\)$",
+        ):
+            BaseDatetime.at(year=2010, month=1, day=1)
+
 
 class LocalDatetimeTests(TestCase):
     def test_class_attributes(self):
