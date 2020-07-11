@@ -164,8 +164,7 @@ class LocalDatetime(BaseDatetime):
     def __init__(self, at: datetime) -> None:
         if at.tzinfo is not None:
             raise ValueError(
-                f"{self.__class__.__name__} can't be initialised with an "
-                f"aware datetime"
+                "LocalDatetime can't be initialised with an aware datetime",
             )
 
         super().__init__(at)
@@ -255,8 +254,7 @@ class UTCDatetime(BaseDatetime):
     def __init__(self, at: datetime) -> None:
         if at.tzinfo is None:
             raise ValueError(
-                f"{self.__class__.__name__} can't be initialised with a "
-                f"naive datetime"
+                "UTCDatetime can't be initialised with a naive datetime",
             )
 
         at = at.astimezone(timezone.utc)
