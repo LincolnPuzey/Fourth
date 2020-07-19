@@ -23,6 +23,15 @@ class BaseDatetimeTests(TestCase):
         ):
             BaseDatetime.at(year=2010, month=1, day=1)
 
+    def test_strftime_not_implemented(self):
+        # workaround the fact BaseDateTime can't be instantiated
+        foo = LocalDatetime.now()
+
+        with self.assertRaisesRegex(
+            NotImplementedError, r"does not implement strftime\(\)$",
+        ):
+            BaseDatetime.strftime(foo, "%Y")
+
 
 class LocalDatetimeTests(TestCase):
     def test_slots(self):
