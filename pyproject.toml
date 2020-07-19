@@ -16,3 +16,10 @@ exclude = '''
   | dist
 )/
 '''
+
+[tool.coverage.run]
+branch = true
+source = ['fourth']
+
+[tool.coverage.report]
+omit = ['tests/*']
