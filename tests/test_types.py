@@ -19,8 +19,7 @@ class BaseDatetimeTests(TestCase):
 
     def test_at_not_implemented(self):
         with self.assertRaisesRegex(
-            NotImplementedError,
-            r"^BaseDatetime does not provide an implementation of at\(\)$",
+            NotImplementedError, r"^BaseDatetime does not implement at\(\)$",
         ):
             BaseDatetime.at(year=2010, month=1, day=1)
 

@@ -115,9 +115,7 @@ class BaseDatetime(metaclass=ABCMeta):
 
         Subclasses must implement this method.
         """
-        raise NotImplementedError(
-            f"{cls.__name__} does not provide an implementation of at()"
-        )
+        raise NotImplementedError(f"{cls.__name__} does not implement at()")
 
     # Instance Properties
 
@@ -172,6 +170,18 @@ class BaseDatetime(metaclass=ABCMeta):
         :return: The ISO 8601 format string representation of the Datetime.
         """
         return self._at.isoformat(sep=sep, timespec=timespec)
+
+    @abstractmethod
+    def strftime(self, format_string: str) -> NoReturn:
+        """
+        Return a string representation of the Datetime, controlled by the format
+        string. See datetime.datetime.strftime() for a list of the formatting options.
+
+        :param format_string: The format string the representation will match.
+        """
+        raise NotImplementedError(
+            f"{self.__class__.__name__} does not implement strftime()"
+        )
 
 
 class LocalDatetime(BaseDatetime):
