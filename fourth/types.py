@@ -492,6 +492,18 @@ class UTCDatetime(BaseDatetime):
             raise ValueError("strptime: date_string didn't contain tz info")
         return cls(datetime_obj)
 
+    # Instance Methods
+
+    def strftime(self, format_string: str) -> str:
+        """
+        Return a string representation of the date and time, controlled by the format
+        string. See datetime.datetime.strftime() for a list of the formatting options.
+
+        :param format_string: The format string the representation will match.
+        :return: The string representation of the date and time.
+        """
+        return self._at.strftime(format_string)
+
 
 UTCDatetime.min = UTCDatetime(datetime.min.replace(tzinfo=timezone.utc))
 UTCDatetime.max = UTCDatetime(datetime.max.replace(tzinfo=timezone.utc))

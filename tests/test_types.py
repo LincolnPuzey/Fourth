@@ -506,3 +506,13 @@ class UTCDatetimeTests(TestCase):
         self.assertEqual(
             bar, UTCDatetime.from_iso_format(bar).iso_format(),
         )
+
+    def test_strftime(self):
+        foo = UTCDatetime.at(2030, 4, 5)
+
+        self.assertEqual(foo.strftime("%Y-%m-%d"), "2030-04-05")
+
+    def test_strftime_with_timezone(self):
+        foo = UTCDatetime.at(2030, 4, 5)
+
+        self.assertEqual(foo.strftime("%Y-%m-%d %z %Z"), "2030-04-05 +0000 UTC")
