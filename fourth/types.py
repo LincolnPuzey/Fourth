@@ -96,6 +96,18 @@ class BaseDatetime(metaclass=ABCMeta):
         """
         return self.iso_format(sep="T", timespec="microseconds")
 
+    def __format__(self, format_spec: str) -> str:
+        """
+        Called by the format() built-in function to build a formatted representation.
+
+        :param format_spec: The formatting style required.
+        :return:
+        """
+        if format_spec == "":
+            return str(self)
+        else:
+            return self.strftime(format_spec)
+
     # Constructors
 
     @classmethod

@@ -90,6 +90,19 @@ class LocalDatetimeTests(TestCase):
             str(foo), "2020-01-01T00:00:00.000000",
         )
 
+    def test_format(self):
+        foo = LocalDatetime.at(1994, 6, 3, 22, 53, 57, 117000)
+
+        self.assertEqual("foo {}".format(foo), "foo 1994-06-03T22:53:57.117000")
+        self.assertEqual("foo {:%Y-%m-%d}".format(foo), "foo 1994-06-03")
+        self.assertEqual("foo {:%H:%M:%S}".format(foo), "foo 22:53:57")
+
+        with self.assertRaisesRegex(
+            ValueError,
+            r"^format string for LocalDatetime.strftime\(\) must not contain timezone",
+        ):
+            "foo {:%H:%M:%S %z}".format(foo)
+
     def test_eq(self):
         # __eq__ test is important since lots of other tests rely on checking
         # if two LocalDatetime instances are equal.
@@ -356,6 +369,14 @@ class UTCDatetimeTests(TestCase):
         self.assertEqual(
             str(foo), "2020-01-01T00:00:00.000000+00:00",
         )
+
+    def test_format(self):
+        foo = UTCDatetime.at(1994, 6, 3, 22, 53, 57, 117000)
+
+        self.assertEqual("foo {}".format(foo), "foo 1994-06-03T22:53:57.117000+00:00")
+        self.assertEqual("foo {:%Y-%m-%d}".format(foo), "foo 1994-06-03")
+        self.assertEqual("foo {:%H:%M:%S}".format(foo), "foo 22:53:57")
+        self.assertEqual("foo {:%z %Z}".format(foo), "foo +0000 UTC")
 
     def test_eq(self):
         # __eq__ test is important since lots of other tests rely on checking
