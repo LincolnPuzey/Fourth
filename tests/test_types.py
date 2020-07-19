@@ -26,6 +26,9 @@ class BaseDatetimeTests(TestCase):
 
 
 class LocalDatetimeTests(TestCase):
+    def test_slots(self):
+        self.assertEqual(LocalDatetime.__slots__, ())
+
     def test_class_attributes(self):
         self.assertTrue(hasattr(LocalDatetime, "min"))
         self.assertEqual(
@@ -42,7 +45,9 @@ class LocalDatetimeTests(TestCase):
         local_now = LocalDatetime(now)
 
         self.assertIsInstance(local_now, LocalDatetime)
+        self.assertTrue(hasattr(local_now, "_at"))
         self.assertEqual(now, local_now._at)
+        self.assertIs(now, local_now._at)
 
     def test_init_exceptions(self):
         now_aware = datetime.now(timezone.utc)
@@ -89,6 +94,9 @@ class LocalDatetimeTests(TestCase):
         )
 
     def test_eq(self):
+        # __eq__ test is important since lots of other tests rely on checking
+        # if two LocalDatetime instances are equal.
+
         foo = LocalDatetime.at(year=2020, month=1, day=1)
 
         # use assertIs to check that __eq__ is returning actual True/False,
@@ -204,6 +212,17 @@ class LocalDatetimeTests(TestCase):
 
         self.assertEqual(
             foo.iso_format(sep=" ", timespec="auto"), "2020-01-01 00:00:00",
+        )
+
+    def test_iso_format_roundtrip(self):
+        foo = LocalDatetime.at(2020, 7, 19, 23, 34, 59, 341000)
+        self.assertEqual(
+            foo, LocalDatetime.from_iso_format(foo.iso_format()),
+        )
+
+        bar = "1994-12-01T02:45:03.040507"
+        self.assertEqual(
+            bar, LocalDatetime.from_iso_format(bar).iso_format(),
         )
 
 
