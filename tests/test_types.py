@@ -8,6 +8,9 @@ from fourth.types import BaseDatetime
 
 
 class BaseDatetimeTests(TestCase):
+    def test_slots(self):
+        self.assertEqual(BaseDatetime.__slots__, ("_at",))
+
     def test_cant_be_instantiated(self):
         with self.assertRaisesRegex(
             TypeError, r"^Can't instantiate abstract class BaseDatetime",
