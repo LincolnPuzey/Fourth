@@ -227,6 +227,9 @@ class LocalDatetimeTests(TestCase):
 
 
 class UTCDatetimeTests(TestCase):
+    def test_slots(self):
+        self.assertEqual(UTCDatetime.__slots__, ())
+
     def test_class_attributes(self):
         self.assertTrue(hasattr(UTCDatetime, "min"))
         self.assertEqual(UTCDatetime.min, UTCDatetime.at(1, 1, 1, 0, 0, 0, 0))
@@ -240,7 +243,9 @@ class UTCDatetimeTests(TestCase):
         utc_now = UTCDatetime(now)
 
         self.assertIsInstance(utc_now, UTCDatetime)
+        self.assertTrue(hasattr(utc_now, "_at"))
         self.assertEqual(now, utc_now._at)
+        self.assertIs(now, utc_now._at)
 
     def test_init_exceptions(self):
         now_naive = datetime.now()
@@ -250,3 +255,191 @@ class UTCDatetimeTests(TestCase):
             r"^UTCDatetime can't be initialised with a naive datetime$",
         ):
             UTCDatetime(now_naive)
+
+    def test_setattr(self):
+        foo = UTCDatetime.now()
+
+        with self.assertRaisesRegex(
+            AttributeError, "^'UTCDatetime' object has no attribute '_at'$"
+        ):
+            setattr(foo, "_at", 1)
+
+    def test_delattr(self):
+        foo = UTCDatetime.now()
+
+        with self.assertRaisesRegex(
+            AttributeError, "^'UTCDatetime' object has no attribute '_at'$"
+        ):
+            delattr(foo, "_at")
+
+    def test_repr(self):
+        foo = UTCDatetime.at(2020, 11, 12, 8, 36, 42, 433677)
+
+        self.assertEqual(
+            repr(foo), "UTCDatetime.at(2020, 11, 12, 8, 36, 42, 433677)",
+        )
+
+    def test_eval_repr(self):
+        foo = UTCDatetime.at(2020, 9, 20, 4, 56, 43, 333677)
+
+        self.assertEqual(foo, eval(repr(foo)))
+
+    def test_str(self):
+        foo = UTCDatetime.at(year=2020, month=1, day=1)
+
+        self.assertEqual(
+            str(foo), "2020-01-01T00:00:00.000000+00:00",
+        )
+
+    def test_eq(self):
+        # __eq__ test is important since lots of other tests rely on checking
+        # if two UTCDatetime instances are equal.
+
+        foo = UTCDatetime.at(year=2020, month=1, day=1)
+
+        # use assertIs to check that __eq__ is returning actual True/False,
+        # and not just a truthy/falsey value
+        self.assertIs(False, foo == 1)
+        self.assertIs(False, foo == "foo")
+        self.assertIs(False, foo == datetime(2020, 1, 3))
+        self.assertIs(False, foo == datetime(2020, 1, 1))
+        self.assertIs(False, foo == LocalDatetime.at(2020, 1, 2))
+        self.assertIs(False, foo == LocalDatetime.at(2020, 1, 1))
+
+        self.assertIs(True, foo == datetime(2020, 1, 1, tzinfo=timezone.utc))
+        self.assertIs(True, foo == UTCDatetime.at(2020, 1, 1))
+
+    def test_at_constructor_minimal_args(self):
+        foo = UTCDatetime.at(year=2020, month=1, day=2)
+
+        self.assertIsInstance(foo, UTCDatetime)
+        self.assertEqual(foo._at, datetime(2020, 1, 2, tzinfo=timezone.utc))
+        self.assertIsNotNone(foo._at.tzinfo)
+
+    def test_at_constructor_all_args(self):
+        foo = UTCDatetime.at(
+            year=2020,
+            month=1,
+            day=2,
+            hour=3,
+            minute=4,
+            second=5,
+            microsecond=6,
+        )
+
+        self.assertIsInstance(foo, UTCDatetime)
+        self.assertEqual(
+            foo._at, datetime(2020, 1, 2, 3, 4, 5, 6, tzinfo=timezone.utc)
+        )
+        self.assertIsNotNone(foo._at.tzinfo)
+
+    def test_at_constructor_minimal_positional_args(self):
+        foo = UTCDatetime.at(2010, 3, 5)
+
+        self.assertIsInstance(foo, UTCDatetime)
+        self.assertEqual(foo._at, datetime(2010, 3, 5, tzinfo=timezone.utc))
+        self.assertIsNotNone(foo._at.tzinfo)
+
+    def test_at_constructor_all_positional_args(self):
+        foo = UTCDatetime.at(2010, 3, 5, 14, 44, 55, 123456)
+
+        self.assertIsInstance(foo, UTCDatetime)
+        self.assertEqual(
+            foo._at,
+            datetime(2010, 3, 5, 14, 44, 55, 123456, tzinfo=timezone.utc),
+        )
+        self.assertIsNotNone(foo._at.tzinfo)
+
+    def test_now_constructor(self):
+        now = datetime.now(timezone.utc)
+        utc_now = UTCDatetime.now()
+
+        self.assertIsInstance(utc_now, UTCDatetime)
+        self.assertLess(utc_now._at - now, timedelta(seconds=1))
+
+    def test_from_iso_format(self):
+        foo = UTCDatetime.from_iso_format("2020-03-04T23:59:59.333444+00:00")
+
+        self.assertIsInstance(foo, UTCDatetime)
+        self.assertEqual(foo, UTCDatetime.at(2020, 3, 4, 23, 59, 59, 333444))
+
+    def test_from_iso_format_alt_timezone(self):
+        foo = UTCDatetime.from_iso_format("2020-03-04T23:59:59.333444+04:30")
+
+        self.assertIsInstance(foo, UTCDatetime)
+        self.assertEqual(foo, UTCDatetime.at(2020, 3, 4, 19, 29, 59, 333444))
+
+    def test_from_iso_format_without_tz(self):
+        with self.assertRaisesRegex(
+            ValueError, r"^fromisoformat: date_string didn't contain tz info$"
+        ):
+            UTCDatetime.from_iso_format("2020-03-04T23:59:59.333444")
+
+    def test_strptime(self):
+        foo = UTCDatetime.strptime(
+            "2020/05/22 12:02:04 +0000", "%Y/%m/%d %H:%M:%S %z",
+        )
+
+        self.assertIsInstance(foo, UTCDatetime)
+        self.assertEqual(foo, UTCDatetime.at(2020, 5, 22, 12, 2, 4))
+
+    def test_strptime_alt_timezone(self):
+        foo = UTCDatetime.strptime(
+            "2020/05/22 12:02:04 -0530", "%Y/%m/%d %H:%M:%S %z",
+        )
+
+        self.assertIsInstance(foo, UTCDatetime)
+        self.assertEqual(foo, UTCDatetime.at(2020, 5, 22, 17, 32, 4))
+
+    def test_strptime_without_tz(self):
+        with self.assertRaisesRegex(
+            ValueError, r"^strptime: date_string didn't contain tz info$"
+        ):
+            UTCDatetime.strptime(
+                "2020/05/22 12:02:04", "%Y/%m/%d %H:%M:%S",
+            )
+
+    def test_properties(self):
+        foo = UTCDatetime.at(2020, 2, 3, 14, 44, 33, 123)
+
+        self.assertEqual(foo.year, 2020)
+        self.assertEqual(foo.month, 2)
+        self.assertEqual(foo.day, 3)
+        self.assertEqual(foo.hour, 14)
+        self.assertEqual(foo.minute, 44)
+        self.assertEqual(foo.second, 33)
+        self.assertEqual(foo.microsecond, 123)
+
+    def test_as_datetime(self):
+        foo = UTCDatetime.at(2020, 1, 1, 22, 33, 52, 333444)
+
+        self.assertEqual(
+            foo.as_datetime(),
+            datetime(2020, 1, 1, 22, 33, 52, 333444, tzinfo=timezone.utc),
+        )
+
+    def test_iso_format(self):
+        foo = UTCDatetime.at(year=2020, month=1, day=1)
+
+        self.assertEqual(
+            foo.iso_format(), "2020-01-01T00:00:00.000000+00:00",
+        )
+
+    def test_iso_format_custom(self):
+        foo = UTCDatetime.at(year=2020, month=1, day=1)
+
+        self.assertEqual(
+            foo.iso_format(sep=" ", timespec="auto"),
+            "2020-01-01 00:00:00+00:00",
+        )
+
+    def test_iso_format_roundtrip(self):
+        foo = UTCDatetime.at(2020, 7, 19, 23, 34, 59, 341000)
+        self.assertEqual(
+            foo, UTCDatetime.from_iso_format(foo.iso_format()),
+        )
+
+        bar = "1994-12-01T02:45:03.040507+00:00"
+        self.assertEqual(
+            bar, UTCDatetime.from_iso_format(bar).iso_format(),
+        )
