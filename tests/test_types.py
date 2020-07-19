@@ -36,8 +36,7 @@ class LocalDatetimeTests(TestCase):
         )
         self.assertTrue(hasattr(LocalDatetime, "max"))
         self.assertEqual(
-            LocalDatetime.max,
-            LocalDatetime.at(9999, 12, 31, 23, 59, 59, 999999),
+            LocalDatetime.max, LocalDatetime.at(9999, 12, 31, 23, 59, 59, 999999)
         )
 
     def test_init(self):
@@ -53,8 +52,7 @@ class LocalDatetimeTests(TestCase):
         now_aware = datetime.now(timezone.utc)
 
         with self.assertRaisesRegex(
-            ValueError,
-            r"^LocalDatetime can't be initialised with an aware datetime$",
+            ValueError, r"^LocalDatetime can't be initialised with an aware datetime$"
         ):
             LocalDatetime(now_aware)
 
@@ -120,13 +118,7 @@ class LocalDatetimeTests(TestCase):
 
     def test_at_constructor_all_args(self):
         foo = LocalDatetime.at(
-            year=2020,
-            month=1,
-            day=2,
-            hour=3,
-            minute=4,
-            second=5,
-            microsecond=6,
+            year=2020, month=1, day=2, hour=3, minute=4, second=5, microsecond=6
         )
 
         self.assertIsInstance(foo, LocalDatetime)
@@ -167,9 +159,7 @@ class LocalDatetimeTests(TestCase):
             LocalDatetime.from_iso_format("2020-03-04T23:59:59.333444+00:00")
 
     def test_strptime(self):
-        foo = LocalDatetime.strptime(
-            "2020/05/22 12:02:04", "%Y/%m/%d %H:%M:%S",
-        )
+        foo = LocalDatetime.strptime("2020/05/22 12:02:04", "%Y/%m/%d %H:%M:%S")
 
         self.assertIsInstance(foo, LocalDatetime)
         self.assertEqual(foo._at, datetime(2020, 5, 22, 12, 2, 4))
@@ -196,9 +186,7 @@ class LocalDatetimeTests(TestCase):
     def test_as_datetime(self):
         foo = LocalDatetime.at(2020, 1, 1, 22, 33, 52, 333444)
 
-        self.assertEqual(
-            foo.as_datetime(), datetime(2020, 1, 1, 22, 33, 52, 333444)
-        )
+        self.assertEqual(foo.as_datetime(), datetime(2020, 1, 1, 22, 33, 52, 333444))
 
     def test_iso_format(self):
         foo = LocalDatetime.at(year=2020, month=1, day=1)
@@ -251,8 +239,7 @@ class UTCDatetimeTests(TestCase):
         now_naive = datetime.now()
 
         with self.assertRaisesRegex(
-            ValueError,
-            r"^UTCDatetime can't be initialised with a naive datetime$",
+            ValueError, r"^UTCDatetime can't be initialised with a naive datetime$"
         ):
             UTCDatetime(now_naive)
 
@@ -318,19 +305,11 @@ class UTCDatetimeTests(TestCase):
 
     def test_at_constructor_all_args(self):
         foo = UTCDatetime.at(
-            year=2020,
-            month=1,
-            day=2,
-            hour=3,
-            minute=4,
-            second=5,
-            microsecond=6,
+            year=2020, month=1, day=2, hour=3, minute=4, second=5, microsecond=6,
         )
 
         self.assertIsInstance(foo, UTCDatetime)
-        self.assertEqual(
-            foo._at, datetime(2020, 1, 2, 3, 4, 5, 6, tzinfo=timezone.utc)
-        )
+        self.assertEqual(foo._at, datetime(2020, 1, 2, 3, 4, 5, 6, tzinfo=timezone.utc))
         self.assertIsNotNone(foo._at.tzinfo)
 
     def test_at_constructor_minimal_positional_args(self):
@@ -345,8 +324,7 @@ class UTCDatetimeTests(TestCase):
 
         self.assertIsInstance(foo, UTCDatetime)
         self.assertEqual(
-            foo._at,
-            datetime(2010, 3, 5, 14, 44, 55, 123456, tzinfo=timezone.utc),
+            foo._at, datetime(2010, 3, 5, 14, 44, 55, 123456, tzinfo=timezone.utc)
         )
         self.assertIsNotNone(foo._at.tzinfo)
 
@@ -376,17 +354,13 @@ class UTCDatetimeTests(TestCase):
             UTCDatetime.from_iso_format("2020-03-04T23:59:59.333444")
 
     def test_strptime(self):
-        foo = UTCDatetime.strptime(
-            "2020/05/22 12:02:04 +0000", "%Y/%m/%d %H:%M:%S %z",
-        )
+        foo = UTCDatetime.strptime("2020/05/22 12:02:04 +0000", "%Y/%m/%d %H:%M:%S %z")
 
         self.assertIsInstance(foo, UTCDatetime)
         self.assertEqual(foo, UTCDatetime.at(2020, 5, 22, 12, 2, 4))
 
     def test_strptime_alt_timezone(self):
-        foo = UTCDatetime.strptime(
-            "2020/05/22 12:02:04 -0530", "%Y/%m/%d %H:%M:%S %z",
-        )
+        foo = UTCDatetime.strptime("2020/05/22 12:02:04 -0530", "%Y/%m/%d %H:%M:%S %z")
 
         self.assertIsInstance(foo, UTCDatetime)
         self.assertEqual(foo, UTCDatetime.at(2020, 5, 22, 17, 32, 4))
@@ -429,8 +403,7 @@ class UTCDatetimeTests(TestCase):
         foo = UTCDatetime.at(year=2020, month=1, day=1)
 
         self.assertEqual(
-            foo.iso_format(sep=" ", timespec="auto"),
-            "2020-01-01 00:00:00+00:00",
+            foo.iso_format(sep=" ", timespec="auto"), "2020-01-01 00:00:00+00:00"
         )
 
     def test_iso_format_roundtrip(self):

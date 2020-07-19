@@ -159,9 +159,7 @@ class BaseDatetime(metaclass=ABCMeta):
         """
         return self._at
 
-    def iso_format(
-        self, *, sep: str = "T", timespec: TIMESPEC = "microseconds"
-    ) -> str:
+    def iso_format(self, *, sep: str = "T", timespec: TIMESPEC = "microseconds") -> str:
         """
         Construct an ISO 8601 format string of the Datetime.
 
@@ -342,9 +340,7 @@ class UTCDatetime(BaseDatetime):
         :raises ValueError: When the `at` argument is naive.
         """
         if at.tzinfo is None:
-            raise ValueError(
-                "UTCDatetime can't be initialised with a naive datetime",
-            )
+            raise ValueError("UTCDatetime can't be initialised with a naive datetime")
 
         at = at.astimezone(timezone.utc)
 
@@ -448,9 +444,7 @@ class UTCDatetime(BaseDatetime):
         """
         datetime_obj = datetime.fromisoformat(date_string)
         if datetime_obj.tzinfo is None:
-            raise ValueError(
-                "fromisoformat: date_string didn't contain tz info"
-            )
+            raise ValueError("fromisoformat: date_string didn't contain tz info")
         return cls(datetime_obj)
 
     @classmethod
