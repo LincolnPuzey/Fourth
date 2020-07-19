@@ -234,6 +234,21 @@ class LocalDatetime(BaseDatetime):
         second: int = 0,
         microsecond: int = 0,
     ) -> LocalDatetime:
+        """
+        Return a new LocalDatetime at the specified time.
+
+        The year, month and day arguments are required.
+        All arguments must be integers.
+
+        :param year:
+        :param month:
+        :param day:
+        :param hour:
+        :param minute:
+        :param second:
+        :param microsecond:
+        :return: A LocalDatetime instance at the specified time.
+        """
         return cls(
             datetime(
                 year=year,
@@ -249,10 +264,28 @@ class LocalDatetime(BaseDatetime):
 
     @classmethod
     def now(cls) -> LocalDatetime:
+        """
+        Return a new LocalDatetime instance for the current date and time.
+
+        :return: A LocalDatetime instance for the current date and time.
+        """
         return cls(datetime.now())
 
     @classmethod
     def from_iso_format(cls, date_string: str) -> LocalDatetime:
+        """
+        Return a new LocalDatetime instance corresponding to the ISO 8601
+        formatted datetime string.
+
+        The datetime string must not contain timezone information.
+
+        This is intended to be the inverse of LocalDatetime.iso_format().
+        Parsing Arbitrary ISO 8601 strings is not supported.
+
+        :param date_string: The ISO 8601 formatted datetime string.
+        :return: The corresponding LocalDatetime instance.
+        :raises ValueError: When the datetime string contains tz info.
+        """
         datetime_obj = datetime.fromisoformat(date_string)
         if datetime_obj.tzinfo is not None:
             raise ValueError("fromisoformat: date_string contained tz info")
@@ -260,6 +293,19 @@ class LocalDatetime(BaseDatetime):
 
     @classmethod
     def strptime(cls, date_string: str, format_string: str) -> LocalDatetime:
+        """
+        Returns a new LocalDatetime instance corresponding to the datetime
+        string after being parsed according to the format string.
+
+        Uses datetime.datetime.strptime to parse the strings.
+
+        The datetime and format strings must not have a timezone component.
+
+        :param date_string: The datetime string.
+        :param format_string: The format string.
+        :return: The corresponding LocalDatetime instance.
+        :raises ValueError: When the strings have a timezone component.
+        """
         datetime_obj = datetime.strptime(date_string, format_string)
         if datetime_obj.tzinfo is not None:
             raise ValueError("strptime: date_string contained tz info")
