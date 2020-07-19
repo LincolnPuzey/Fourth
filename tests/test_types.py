@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from datetime import datetime, timedelta, timezone
-from unittest import TestCase
+from unittest import TestCase, expectedFailure
 
 from fourth import LocalDatetime, UTCDatetime
 from fourth.types import BaseDatetime
@@ -212,6 +212,86 @@ class LocalDatetimeTests(TestCase):
         self.assertEqual(
             bar, LocalDatetime.from_iso_format(bar).iso_format(),
         )
+
+    def test_strftime(self):
+        foo = LocalDatetime.at(2030, 4, 5)
+
+        self.assertEqual(foo.strftime("%Y-%m-%d"), "2030-04-05")
+
+    def test_strftime_with_timezone_directives(self):
+        foo = LocalDatetime.at(2030, 4, 5)
+
+        with self.assertRaisesRegex(
+            ValueError,
+            r"^format string for LocalDatetime.strftime\(\) must not contain timezone",
+        ):
+            foo.strftime("%Y-%m-%d %z")
+
+        with self.assertRaisesRegex(
+            ValueError,
+            r"^format string for LocalDatetime.strftime\(\) must not contain timezone",
+        ):
+            foo.strftime("%Y-%m-%d %Z")
+
+    def test_strftime_with_timezone_directives_at_start(self):
+        foo = LocalDatetime.at(2030, 4, 5)
+
+        with self.assertRaisesRegex(
+            ValueError,
+            r"^format string for LocalDatetime.strftime\(\) must not contain timezone",
+        ):
+            foo.strftime("%z %Y-%m-%d")
+
+        with self.assertRaisesRegex(
+            ValueError,
+            r"^format string for LocalDatetime.strftime\(\) must not contain timezone",
+        ):
+            foo.strftime("%Z %Y-%m-%d")
+
+    def test_strftime_with_timezone_directives_escaped(self):
+        foo = LocalDatetime.at(2030, 4, 5)
+
+        self.assertEqual(foo.strftime("%Y-%m-%d %%z"), "2030-04-05 %z")
+        self.assertEqual(foo.strftime("%Y-%m-%d %%Z"), "2030-04-05 %Z")
+
+        self.assertEqual(foo.strftime("%Y-%m-%d %%%%z"), "2030-04-05 %%z")
+        self.assertEqual(foo.strftime("%Y-%m-%d %%%%Z"), "2030-04-05 %%Z")
+
+    @expectedFailure
+    def test_strftime_with_timezone_directives_not_escaped(self):
+        # This test illustrates a current deficiency with the timezone directive
+        # matching regex.
+        foo = LocalDatetime.at(2030, 4, 5)
+
+        with self.assertRaisesRegex(
+            ValueError,
+            r"^format string for LocalDatetime.strftime\(\) must not contain timezone",
+        ):
+            foo.strftime("%Y-%m-%d %%%Z")
+
+        with self.assertRaisesRegex(
+            ValueError,
+            r"^format string for LocalDatetime.strftime\(\) must not contain timezone",
+        ):
+            foo.strftime("%Y-%m-%d %%%z")
+
+    @expectedFailure
+    def test_strftime_with_timezone_directives_not_escaped_twice(self):
+        # This test illustrates a current deficiency with the timezone directive
+        # matching regex.
+        foo = LocalDatetime.at(2030, 4, 5)
+
+        with self.assertRaisesRegex(
+            ValueError,
+            r"^format string for LocalDatetime.strftime\(\) must not contain timezone",
+        ):
+            foo.strftime("%Y-%m-%d %%%%%Z")
+
+        with self.assertRaisesRegex(
+            ValueError,
+            r"^format string for LocalDatetime.strftime\(\) must not contain timezone",
+        ):
+            foo.strftime("%Y-%m-%d %%%%%z")
 
 
 class UTCDatetimeTests(TestCase):

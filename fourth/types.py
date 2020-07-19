@@ -7,6 +7,7 @@ __all__ = ("BaseDatetime", "LocalDatetime", "UTCDatetime")
 
 from abc import ABCMeta, abstractmethod
 from datetime import datetime, timezone
+from re import search
 from typing import Any, ClassVar, Literal, NoReturn, Union
 
 
@@ -308,6 +309,29 @@ class LocalDatetime(BaseDatetime):
         if datetime_obj.tzinfo is not None:
             raise ValueError("strptime: date_string contained tz info")
         return cls(datetime_obj)
+
+    # Instance Methods
+
+    def strftime(self, format_string: str) -> str:
+        """
+        Return a string representation of the date and time, controlled by the format
+        string. See datetime.datetime.strftime() for a list of the formatting options.
+
+        The format string must not contain timezone directive (%z, %Z), since
+        LocalDatetime has no timezone information.
+
+        :param format_string: The format string the representation will match.
+        :return: The string representation of the date and time.
+        :raises ValueError: When the format string contains timezone directives.
+        """
+        # TODO improve regex. See tests with expected failures for details.
+        if search(r"([^%]|^)%[Zz]", format_string) is not None:
+            raise ValueError(
+                "format string for LocalDatetime.strftime() must not contain timezone "
+                "directives ('%z', '%Z')"
+            )
+
+        return self._at.strftime(format_string)
 
 
 LocalDatetime.min = LocalDatetime(datetime.min)
