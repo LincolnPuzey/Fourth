@@ -335,6 +335,16 @@ class UTCDatetimeTests(TestCase):
         self.assertIsInstance(utc_now, UTCDatetime)
         self.assertLess(utc_now._at - now, timedelta(seconds=1))
 
+    def test_from_timestamp_constructor(self):
+        foo = UTCDatetime.from_timestamp(1_200_300_400)
+
+        self.assertEqual(foo, UTCDatetime.at(2008, 1, 14, 8, 46, 40, 0))
+
+    def test_from_timestamp_constructor_from_float(self):
+        foo = UTCDatetime.from_timestamp(1_200_300_400.25)
+
+        self.assertEqual(foo, UTCDatetime.at(2008, 1, 14, 8, 46, 40, 250000))
+
     def test_from_iso_format(self):
         foo = UTCDatetime.from_iso_format("2020-03-04T23:59:59.333444+00:00")
 
