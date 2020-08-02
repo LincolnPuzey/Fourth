@@ -12,7 +12,6 @@ from typing import Any, Callable, ClassVar, Literal, NoReturn, Union
 
 from ._internal import contains_timezone
 
-
 TIMESPEC = Literal[
     "auto", "hours", "minutes", "seconds", "milliseconds", "microseconds"
 ]

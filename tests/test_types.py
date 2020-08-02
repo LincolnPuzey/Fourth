@@ -5,6 +5,7 @@ from unittest import TestCase
 
 from fourth import LocalDatetime, UTCDatetime
 from fourth.types import BaseDatetime
+
 from . import FourthTestCase
 
 

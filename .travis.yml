@@ -12,6 +12,7 @@ install:
 script:
   - pyflakes fourth tests setup.py
   - black --check --diff fourth tests setup.py
+  - isort . --check-only --diff
   - coverage run -m unittest
 
 after_success:
