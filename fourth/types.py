@@ -240,7 +240,7 @@ class LocalDatetime(BaseDatetime):
         elif isinstance(other, datetime):
             return other.tzinfo is None and other == self._at
         else:
-            return False
+            return NotImplemented
 
     # Constructors
 
@@ -405,7 +405,7 @@ class UTCDatetime(BaseDatetime):
         elif isinstance(other, datetime):
             return other.tzinfo is not None and other == self._at
         else:
-            return False
+            return NotImplemented
 
     # Constructors
 

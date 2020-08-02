@@ -5,6 +5,7 @@ from unittest import TestCase, expectedFailure
 
 from fourth import LocalDatetime, UTCDatetime
 from fourth.types import BaseDatetime
+from . import FourthTestCase
 
 
 class BaseDatetimeTests(TestCase):
@@ -33,7 +34,7 @@ class BaseDatetimeTests(TestCase):
             BaseDatetime.strftime(foo, "%Y")
 
 
-class LocalDatetimeTests(TestCase):
+class LocalDatetimeTests(FourthTestCase):
     def test_slots(self):
         self.assertEqual(LocalDatetime.__slots__, ())
 
@@ -112,23 +113,36 @@ class LocalDatetimeTests(TestCase):
         ):
             "foo {:%H:%M:%S %z}".format(foo)
 
-    def test_eq(self):
-        # __eq__ test is important since lots of other tests rely on checking
+    def test_eq_method(self):
+        foo = LocalDatetime.at(year=2020, month=1, day=1)
+
+        # use assertIs to check that __eq__ is returning True/False/NotImplemented,
+        # and not just a truthy/falsey value
+        self.assertIs(NotImplemented, foo.__eq__(1))
+        self.assertIs(NotImplemented, foo.__eq__("foo"))
+        self.assertIs(False, foo.__eq__(datetime(2020, 1, 3)))
+        self.assertIs(False, foo.__eq__(datetime(2020, 1, 1, tzinfo=timezone.utc)))
+        self.assertIs(False, foo.__eq__(LocalDatetime.at(2020, 1, 2)))
+        self.assertIs(NotImplemented, foo.__eq__(UTCDatetime.at(2020, 1, 1)))
+
+        self.assertIs(True, foo.__eq__(datetime(2020, 1, 1)))
+        self.assertIs(True, foo.__eq__(LocalDatetime.at(2020, 1, 1)))
+
+    def test_eq_operator(self):
+        # == test is important since lots of other tests rely on checking
         # if two LocalDatetime instances are equal.
 
         foo = LocalDatetime.at(year=2020, month=1, day=1)
 
-        # use assertIs to check that __eq__ is returning actual True/False,
-        # and not just a truthy/falsey value
-        self.assertIs(False, foo == 1)
-        self.assertIs(False, foo == "foo")
-        self.assertIs(False, foo == datetime(2020, 1, 3))
-        self.assertIs(False, foo == datetime(2020, 1, 1, tzinfo=timezone.utc))
-        self.assertIs(False, foo == LocalDatetime.at(2020, 1, 2))
-        self.assertIs(False, foo == UTCDatetime.at(2020, 1, 1))
+        self.assertSymmetricNotEqual(foo, 1)
+        self.assertSymmetricNotEqual(foo, "foo")
+        self.assertSymmetricNotEqual(foo, datetime(2020, 1, 3))
+        self.assertSymmetricNotEqual(foo, datetime(2020, 1, 1, tzinfo=timezone.utc))
+        self.assertSymmetricNotEqual(foo, LocalDatetime.at(2020, 1, 2))
+        self.assertSymmetricNotEqual(foo, UTCDatetime.at(2020, 1, 1))
 
-        self.assertIs(True, foo == datetime(2020, 1, 1))
-        self.assertIs(True, foo == LocalDatetime.at(2020, 1, 1))
+        self.assertSymmetricEqual(foo, datetime(2020, 1, 1))
+        self.assertSymmetricEqual(foo, LocalDatetime.at(2020, 1, 1))
 
     def test_bool(self):
         self.assertIs(True, bool(LocalDatetime.min))
@@ -323,7 +337,7 @@ class LocalDatetimeTests(TestCase):
             foo.strftime("%Y-%m-%d %%%%%z")
 
 
-class UTCDatetimeTests(TestCase):
+class UTCDatetimeTests(FourthTestCase):
     def test_slots(self):
         self.assertEqual(UTCDatetime.__slots__, ())
 
@@ -395,23 +409,36 @@ class UTCDatetimeTests(TestCase):
         self.assertEqual("foo {:%H:%M:%S}".format(foo), "foo 22:53:57")
         self.assertEqual("foo {:%z %Z}".format(foo), "foo +0000 UTC")
 
-    def test_eq(self):
-        # __eq__ test is important since lots of other tests rely on checking
+    def test_eq_method(self):
+        foo = UTCDatetime.at(year=2020, month=1, day=1)
+
+        # use assertIs to check that __eq__ is returning True/False/NotImplemented,
+        # and not just a truthy/falsey value
+        self.assertIs(NotImplemented, foo.__eq__(1))
+        self.assertIs(NotImplemented, foo.__eq__("foo"))
+        self.assertIs(False, foo.__eq__(datetime(2020, 1, 3)))
+        self.assertIs(False, foo.__eq__(datetime(2020, 1, 1)))
+        self.assertIs(False, foo.__eq__(UTCDatetime.at(2020, 1, 2)))
+        self.assertIs(NotImplemented, foo.__eq__(LocalDatetime.at(2020, 1, 1)))
+
+        self.assertIs(True, foo.__eq__(datetime(2020, 1, 1, tzinfo=timezone.utc)))
+        self.assertIs(True, foo.__eq__(UTCDatetime.at(2020, 1, 1)))
+
+    def test_eq_operator(self):
+        # == test is important since lots of other tests rely on checking
         # if two UTCDatetime instances are equal.
 
         foo = UTCDatetime.at(year=2020, month=1, day=1)
 
-        # use assertIs to check that __eq__ is returning actual True/False,
-        # and not just a truthy/falsey value
-        self.assertIs(False, foo == 1)
-        self.assertIs(False, foo == "foo")
-        self.assertIs(False, foo == datetime(2020, 1, 3))
-        self.assertIs(False, foo == datetime(2020, 1, 1))
-        self.assertIs(False, foo == LocalDatetime.at(2020, 1, 2))
-        self.assertIs(False, foo == LocalDatetime.at(2020, 1, 1))
+        self.assertSymmetricNotEqual(foo, 1)
+        self.assertSymmetricNotEqual(foo, "foo")
+        self.assertSymmetricNotEqual(foo, datetime(2020, 1, 3))
+        self.assertSymmetricNotEqual(foo, datetime(2020, 1, 1))
+        self.assertSymmetricNotEqual(foo, LocalDatetime.at(2020, 1, 2))
+        self.assertSymmetricNotEqual(foo, LocalDatetime.at(2020, 1, 1))
 
-        self.assertIs(True, foo == datetime(2020, 1, 1, tzinfo=timezone.utc))
-        self.assertIs(True, foo == UTCDatetime.at(2020, 1, 1))
+        self.assertSymmetricEqual(foo, datetime(2020, 1, 1, tzinfo=timezone.utc))
+        self.assertSymmetricEqual(foo, UTCDatetime.at(2020, 1, 1))
 
     def test_bool(self):
         self.assertIs(True, bool(UTCDatetime.min))
