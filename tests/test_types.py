@@ -130,6 +130,14 @@ class LocalDatetimeTests(TestCase):
         self.assertIs(True, foo == datetime(2020, 1, 1))
         self.assertIs(True, foo == LocalDatetime.at(2020, 1, 1))
 
+    def test_bool(self):
+        self.assertIs(True, bool(LocalDatetime.min))
+        self.assertIs(True, bool(LocalDatetime.max))
+        self.assertIs(True, bool(LocalDatetime.now()))
+        self.assertIs(True, bool(LocalDatetime.at(1754, 3, 5, 23, 45, 32)))
+        self.assertIs(True, bool(LocalDatetime.at(2020, 12, 1, 0, 10, 20, 30)))
+        self.assertIs(True, bool(LocalDatetime.at(3021, 9, 29, 13, 14, 15, 165)))
+
     def test_at_constructor_minimal_args(self):
         foo = LocalDatetime.at(year=2020, month=1, day=2)
 
@@ -404,6 +412,14 @@ class UTCDatetimeTests(TestCase):
 
         self.assertIs(True, foo == datetime(2020, 1, 1, tzinfo=timezone.utc))
         self.assertIs(True, foo == UTCDatetime.at(2020, 1, 1))
+
+    def test_bool(self):
+        self.assertIs(True, bool(UTCDatetime.min))
+        self.assertIs(True, bool(UTCDatetime.max))
+        self.assertIs(True, bool(UTCDatetime.now()))
+        self.assertIs(True, bool(UTCDatetime.at(1754, 3, 5, 23, 45, 32)))
+        self.assertIs(True, bool(UTCDatetime.at(2020, 12, 1, 0, 10, 20, 30)))
+        self.assertIs(True, bool(UTCDatetime.at(3021, 9, 29, 13, 14, 15, 165)))
 
     def test_at_constructor_minimal_args(self):
         foo = UTCDatetime.at(year=2020, month=1, day=2)
