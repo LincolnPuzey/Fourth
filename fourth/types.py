@@ -227,13 +227,14 @@ class LocalDatetime(BaseDatetime):
 
         super().__init__(at)
 
-    def __eq__(self, other) -> bool:
+    def __eq__(self, other: Any) -> Union[bool, NotImplemented]:
         """
         A LocalDateTime can be equal to other LocalDateTime instances and
         datetime.datetime instances that are naive.
+        Explicitly not equal to aware datetime.datetime instances.
 
         :param other: The object to check if equal to.
-        :return: True if equal.
+        :return: True if equal. False if not. NotImplemented otherwise.
         """
         if isinstance(other, LocalDatetime):
             return other._at == self._at
@@ -401,13 +402,14 @@ class UTCDatetime(BaseDatetime):
 
         super().__init__(at)
 
-    def __eq__(self, other) -> bool:
+    def __eq__(self, other: Any) -> Union[bool, NotImplemented]:
         """
         A UTCDateTime can be equal to other UTCDateTime instances and
         datetime.datetime instances that are aware.
+        Explicitly not equal to naive datetime.datetime instances.
 
         :param other: The object to check if equal to.
-        :return: True if equal.
+        :return: True if equal. False if not. NotImplemented otherwise.
         """
         if isinstance(other, UTCDatetime):
             return other._at == self._at
