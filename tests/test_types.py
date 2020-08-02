@@ -545,6 +545,110 @@ class UTCDatetimeTests(FourthTestCase):
         self.assertEqual(hash(foo), hash(foo_datetime))
         self.assertEqual(hash(foo), hash(foo_datetime_offset))
 
+    def test_lt(self):
+        foo = UTCDatetime.at(1990, 3, 4)
+
+        self.assertIs(NotImplemented, foo.__lt__("bar"))
+        self.assertIs(NotImplemented, foo.__lt__(datetime(1990, 3, 4)))
+
+        self.assertIs(True, foo.__lt__(datetime(2000, 12, 1, tzinfo=timezone.utc)))
+        self.assertIs(False, foo.__lt__(datetime(1990, 3, 4, tzinfo=timezone.utc)))
+        self.assertIs(False, foo.__lt__(datetime(1989, 12, 31, tzinfo=timezone.utc)))
+        self.assertIs(
+            True,
+            foo.__lt__(datetime(1990, 3, 3, 22, tzinfo=timezone(timedelta(hours=-4)))),
+        )
+        self.assertIs(
+            False,
+            foo.__lt__(datetime(1990, 3, 4, 2, tzinfo=timezone(timedelta(hours=4)))),
+        )
+        self.assertIs(
+            False,
+            foo.__lt__(datetime(1990, 3, 4, 2, tzinfo=timezone(timedelta(hours=2)))),
+        )
+
+        self.assertIs(True, foo.__lt__(UTCDatetime.at(1990, 3, 6)))
+        self.assertIs(False, foo.__lt__(foo))
+        self.assertIs(False, foo.__lt__(UTCDatetime.at(1990, 3, 1)))
+
+    def test_le(self):
+        foo = UTCDatetime.at(1990, 3, 4)
+
+        self.assertIs(NotImplemented, foo.__le__("bar"))
+        self.assertIs(NotImplemented, foo.__le__(datetime(1990, 3, 4)))
+
+        self.assertIs(True, foo.__le__(datetime(2000, 12, 1, tzinfo=timezone.utc)))
+        self.assertIs(True, foo.__le__(datetime(1990, 3, 4, tzinfo=timezone.utc)))
+        self.assertIs(False, foo.__le__(datetime(1989, 12, 31, tzinfo=timezone.utc)))
+        self.assertIs(
+            True,
+            foo.__le__(datetime(1990, 3, 3, 22, tzinfo=timezone(timedelta(hours=-4)))),
+        )
+        self.assertIs(
+            False,
+            foo.__le__(datetime(1990, 3, 4, 2, tzinfo=timezone(timedelta(hours=4)))),
+        )
+        self.assertIs(
+            True,
+            foo.__le__(datetime(1990, 3, 4, 2, tzinfo=timezone(timedelta(hours=2)))),
+        )
+
+        self.assertIs(True, foo.__le__(UTCDatetime.at(1990, 3, 6)))
+        self.assertIs(True, foo.__le__(foo))
+        self.assertIs(False, foo.__le__(UTCDatetime.at(1990, 3, 1)))
+
+    def test_gt(self):
+        foo = UTCDatetime.at(1990, 3, 4)
+
+        self.assertIs(NotImplemented, foo.__gt__("bar"))
+        self.assertIs(NotImplemented, foo.__gt__(datetime(1990, 3, 4)))
+
+        self.assertIs(False, foo.__gt__(datetime(2000, 12, 1, tzinfo=timezone.utc)))
+        self.assertIs(False, foo.__gt__(datetime(1990, 3, 4, tzinfo=timezone.utc)))
+        self.assertIs(True, foo.__gt__(datetime(1989, 12, 31, tzinfo=timezone.utc)))
+        self.assertIs(
+            False,
+            foo.__gt__(datetime(1990, 3, 3, 22, tzinfo=timezone(timedelta(hours=-4)))),
+        )
+        self.assertIs(
+            True,
+            foo.__gt__(datetime(1990, 3, 4, 2, tzinfo=timezone(timedelta(hours=4)))),
+        )
+        self.assertIs(
+            False,
+            foo.__gt__(datetime(1990, 3, 4, 2, tzinfo=timezone(timedelta(hours=2)))),
+        )
+
+        self.assertIs(False, foo.__gt__(UTCDatetime.at(1990, 3, 6)))
+        self.assertIs(False, foo.__gt__(foo))
+        self.assertIs(True, foo.__gt__(UTCDatetime.at(1990, 3, 1)))
+
+    def test_ge(self):
+        foo = UTCDatetime.at(1990, 3, 4)
+
+        self.assertIs(NotImplemented, foo.__ge__("bar"))
+        self.assertIs(NotImplemented, foo.__ge__(datetime(1990, 3, 4)))
+
+        self.assertIs(False, foo.__ge__(datetime(2000, 12, 1, tzinfo=timezone.utc)))
+        self.assertIs(True, foo.__ge__(datetime(1990, 3, 4, tzinfo=timezone.utc)))
+        self.assertIs(True, foo.__ge__(datetime(1989, 12, 31, tzinfo=timezone.utc)))
+        self.assertIs(
+            False,
+            foo.__ge__(datetime(1990, 3, 3, 22, tzinfo=timezone(timedelta(hours=-4)))),
+        )
+        self.assertIs(
+            True,
+            foo.__ge__(datetime(1990, 3, 4, 2, tzinfo=timezone(timedelta(hours=4)))),
+        )
+        self.assertIs(
+            True,
+            foo.__ge__(datetime(1990, 3, 4, 2, tzinfo=timezone(timedelta(hours=2)))),
+        )
+
+        self.assertIs(False, foo.__ge__(UTCDatetime.at(1990, 3, 6)))
+        self.assertIs(True, foo.__ge__(foo))
+        self.assertIs(True, foo.__ge__(UTCDatetime.at(1990, 3, 1)))
+
     def test_bool(self):
         self.assertIs(True, bool(UTCDatetime.min))
         self.assertIs(True, bool(UTCDatetime.max))

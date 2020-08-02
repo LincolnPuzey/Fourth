@@ -254,7 +254,7 @@ class LocalDatetime(BaseDatetime):
         """
         return hash(self._at)
 
-    # Rich comparison methods
+    # Rich Comparison Methods
 
     def _rich_compare(
         self, other: Any, compare: Callable[[Any, Any], Union[bool, NotImplemented]]
@@ -462,6 +462,41 @@ class UTCDatetime(BaseDatetime):
         :return: The hash as an integer.
         """
         return hash(self._at)
+
+    # Rich Comparison Methods
+
+    def _rich_compare(
+        self, other: Any, compare: Callable[[Any, Any], Union[bool, NotImplemented]]
+    ) -> Union[bool, NotImplemented]:
+        """
+        Do a rich comparison with other. This method contains the common logic for all
+        the rich comparisons.
+
+        Instances of UTCDatetime can be compared with other UTCDatetime instances,
+        and aware datetime.datetime instances.
+
+        :param other: The other object to compare to.
+        :param compare: A function to compare objects once we know we can.
+        :return: True/False if determined. Otherwise NotImplemented.
+        """
+        if isinstance(other, UTCDatetime):
+            return compare(self._at, other._at)
+        elif isinstance(other, datetime) and other.tzinfo is not None:
+            return compare(self._at, other)
+        else:
+            return NotImplemented
+
+    def __lt__(self, other: Any) -> Union[bool, NotImplemented]:
+        return self._rich_compare(other, lt)
+
+    def __le__(self, other: Any) -> Union[bool, NotImplemented]:
+        return self._rich_compare(other, le)
+
+    def __gt__(self, other: Any) -> Union[bool, NotImplemented]:
+        return self._rich_compare(other, gt)
+
+    def __ge__(self, other: Any) -> Union[bool, NotImplemented]:
+        return self._rich_compare(other, ge)
 
     # Constructors
 
