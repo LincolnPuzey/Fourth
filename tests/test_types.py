@@ -144,6 +144,13 @@ class LocalDatetimeTests(FourthTestCase):
         self.assertSymmetricEqual(foo, datetime(2020, 1, 1))
         self.assertSymmetricEqual(foo, LocalDatetime.at(2020, 1, 1))
 
+    def test_hash(self):
+        foo = LocalDatetime.now()
+        foo_hash = hash(foo)
+
+        self.assertIsInstance(foo_hash, int)
+        self.assertEqual(foo_hash, hash(foo._at))
+
     def test_bool(self):
         self.assertIs(True, bool(LocalDatetime.min))
         self.assertIs(True, bool(LocalDatetime.max))
@@ -439,6 +446,13 @@ class UTCDatetimeTests(FourthTestCase):
 
         self.assertSymmetricEqual(foo, datetime(2020, 1, 1, tzinfo=timezone.utc))
         self.assertSymmetricEqual(foo, UTCDatetime.at(2020, 1, 1))
+
+    def test_hash(self):
+        foo = UTCDatetime.now()
+        foo_hash = hash(foo)
+
+        self.assertIsInstance(foo_hash, int)
+        self.assertEqual(foo_hash, hash(foo._at))
 
     def test_bool(self):
         self.assertIs(True, bool(UTCDatetime.min))

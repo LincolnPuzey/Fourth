@@ -242,6 +242,15 @@ class LocalDatetime(BaseDatetime):
         else:
             return NotImplemented
 
+    def __hash__(self) -> int:
+        """
+        The hash is the same as the internal datetime's hash. This satisfies the
+        property that objects which compare equal have the same hash value.
+
+        :return: The hash as an integer.
+        """
+        return hash(self._at)
+
     # Constructors
 
     @classmethod
@@ -406,6 +415,15 @@ class UTCDatetime(BaseDatetime):
             return other.tzinfo is not None and other == self._at
         else:
             return NotImplemented
+
+    def __hash__(self) -> int:
+        """
+        The hash is the same as the internal datetime's hash. This satisfies the
+        property that objects which compare equal have the same hash value.
+
+        :return: The hash as an integer.
+        """
+        return hash(self._at)
 
     # Constructors
 
