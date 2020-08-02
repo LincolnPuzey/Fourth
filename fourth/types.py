@@ -7,8 +7,9 @@ __all__ = ("BaseDatetime", "LocalDatetime", "UTCDatetime")
 
 from abc import ABCMeta, abstractmethod
 from datetime import datetime, timezone
+from operator import ge, gt, le, lt
 from re import search
-from typing import Any, ClassVar, Literal, NoReturn, Union
+from typing import Any, Callable, ClassVar, Literal, NoReturn, Union
 
 
 TIMESPEC = Literal[
@@ -251,6 +252,41 @@ class LocalDatetime(BaseDatetime):
         :return: The hash as an integer.
         """
         return hash(self._at)
+
+    # Rich comparison methods
+
+    def _rich_compare(
+        self, other: Any, compare: Callable[[Any, Any], Union[bool, NotImplemented]]
+    ) -> Union[bool, NotImplemented]:
+        """
+        Do a rich comparison with other. This method contains the common logic for all
+        the rich comparisons.
+
+        Instances of LocalDatetime can be compared with other LocalDatetime instances,
+        and naive datetime.datetime instances.
+
+        :param other: The other object to compare to.
+        :param compare: A function to compare objects once we know we can.
+        :return: True/False if determined. Otherwise NotImplemented.
+        """
+        if isinstance(other, LocalDatetime):
+            return compare(self._at, other._at)
+        elif isinstance(other, datetime) and other.tzinfo is None:
+            return compare(self._at, other)
+        else:
+            return NotImplemented
+
+    def __lt__(self, other: Any) -> Union[bool, NotImplemented]:
+        return self._rich_compare(other, lt)
+
+    def __le__(self, other: Any) -> Union[bool, NotImplemented]:
+        return self._rich_compare(other, le)
+
+    def __gt__(self, other: Any) -> Union[bool, NotImplemented]:
+        return self._rich_compare(other, gt)
+
+    def __ge__(self, other: Any) -> Union[bool, NotImplemented]:
+        return self._rich_compare(other, ge)
 
     # Constructors
 

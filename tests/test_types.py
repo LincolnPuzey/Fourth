@@ -166,6 +166,62 @@ class LocalDatetimeTests(FourthTestCase):
         self.assertEqual(hash(foo), hash(bar))
         self.assertEqual(hash(foo), hash(foo_datetime))
 
+    def test_lt(self):
+        foo = LocalDatetime.at(1990, 3, 4)
+
+        self.assertIs(NotImplemented, foo.__lt__("bar"))
+        self.assertIs(
+            NotImplemented, foo.__lt__(datetime(1990, 3, 4, tzinfo=timezone.utc))
+        )
+        self.assertIs(True, foo.__lt__(datetime(2000, 12, 1)))
+        self.assertIs(False, foo.__lt__(datetime(1990, 3, 4)))
+        self.assertIs(False, foo.__lt__(datetime(1989, 12, 31)))
+        self.assertIs(True, foo.__lt__(LocalDatetime.at(1990, 3, 6)))
+        self.assertIs(False, foo.__lt__(foo))
+        self.assertIs(False, foo.__lt__(LocalDatetime.at(1990, 3, 1)))
+
+    def test_le(self):
+        foo = LocalDatetime.at(1990, 3, 4)
+
+        self.assertIs(NotImplemented, foo.__le__("bar"))
+        self.assertIs(
+            NotImplemented, foo.__le__(datetime(1990, 3, 4, tzinfo=timezone.utc))
+        )
+        self.assertIs(True, foo.__le__(datetime(2000, 12, 1)))
+        self.assertIs(True, foo.__le__(datetime(1990, 3, 4)))
+        self.assertIs(False, foo.__le__(datetime(1989, 12, 31)))
+        self.assertIs(True, foo.__le__(LocalDatetime.at(1990, 3, 6)))
+        self.assertIs(True, foo.__le__(foo))
+        self.assertIs(False, foo.__le__(LocalDatetime.at(1990, 3, 1)))
+
+    def test_gt(self):
+        foo = LocalDatetime.at(1990, 3, 4)
+
+        self.assertIs(NotImplemented, foo.__gt__("bar"))
+        self.assertIs(
+            NotImplemented, foo.__gt__(datetime(1990, 3, 4, tzinfo=timezone.utc))
+        )
+        self.assertIs(False, foo.__gt__(datetime(2000, 12, 1)))
+        self.assertIs(False, foo.__gt__(datetime(1990, 3, 4)))
+        self.assertIs(True, foo.__gt__(datetime(1989, 12, 31)))
+        self.assertIs(False, foo.__gt__(LocalDatetime.at(1990, 3, 6)))
+        self.assertIs(False, foo.__gt__(foo))
+        self.assertIs(True, foo.__gt__(LocalDatetime.at(1990, 3, 1)))
+
+    def test_ge(self):
+        foo = LocalDatetime.at(1990, 3, 4)
+
+        self.assertIs(NotImplemented, foo.__ge__("bar"))
+        self.assertIs(
+            NotImplemented, foo.__ge__(datetime(1990, 3, 4, tzinfo=timezone.utc))
+        )
+        self.assertIs(False, foo.__ge__(datetime(2000, 12, 1)))
+        self.assertIs(True, foo.__ge__(datetime(1990, 3, 4)))
+        self.assertIs(True, foo.__ge__(datetime(1989, 12, 31)))
+        self.assertIs(False, foo.__ge__(LocalDatetime.at(1990, 3, 6)))
+        self.assertIs(True, foo.__ge__(foo))
+        self.assertIs(True, foo.__ge__(LocalDatetime.at(1990, 3, 1)))
+
     def test_bool(self):
         self.assertIs(True, bool(LocalDatetime.min))
         self.assertIs(True, bool(LocalDatetime.max))
