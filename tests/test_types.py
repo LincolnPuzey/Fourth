@@ -444,6 +444,10 @@ class UTCDatetimeTests(FourthTestCase):
         self.assertIs(NotImplemented, foo.__eq__(LocalDatetime.at(2020, 1, 1)))
 
         self.assertIs(True, foo.__eq__(datetime(2020, 1, 1, tzinfo=timezone.utc)))
+        self.assertIs(
+            True,
+            foo.__eq__(datetime(2020, 1, 1, 3, tzinfo=timezone(timedelta(hours=3)))),
+        )
         self.assertIs(True, foo.__eq__(UTCDatetime.at(2020, 1, 1)))
 
     def test_eq_operator(self):
@@ -460,6 +464,9 @@ class UTCDatetimeTests(FourthTestCase):
         self.assertSymmetricNotEqual(foo, LocalDatetime.at(2020, 1, 1))
 
         self.assertSymmetricEqual(foo, datetime(2020, 1, 1, tzinfo=timezone.utc))
+        self.assertSymmetricEqual(
+            foo, datetime(2020, 1, 1, 3, tzinfo=timezone(timedelta(hours=3)))
+        )
         self.assertSymmetricEqual(foo, UTCDatetime.at(2020, 1, 1))
 
     def test_hash(self):
