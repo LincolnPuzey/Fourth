@@ -8,8 +8,9 @@ __all__ = ("BaseDatetime", "LocalDatetime", "UTCDatetime")
 from abc import ABCMeta, abstractmethod
 from datetime import datetime, timezone
 from operator import ge, gt, le, lt
-from re import search
 from typing import Any, Callable, ClassVar, Literal, NoReturn, Union
+
+from ._internal import contains_timezone
 
 
 TIMESPEC = Literal[
@@ -392,8 +393,7 @@ class LocalDatetime(BaseDatetime):
         :return: The string representation of the date and time.
         :raises ValueError: When the format string contains timezone directives.
         """
-        # TODO improve regex. See tests with expected failures for details.
-        if search(r"([^%]|^)%[Zz]", format_string) is not None:
+        if contains_timezone(format_string):
             raise ValueError(
                 "format string for LocalDatetime.strftime() must not contain timezone "
                 "directives ('%z', '%Z')"
