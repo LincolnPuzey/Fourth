@@ -151,6 +151,21 @@ class LocalDatetimeTests(FourthTestCase):
         self.assertIsInstance(foo_hash, int)
         self.assertEqual(foo_hash, hash(foo._at))
 
+    def test_hash_and_eq(self):
+        """
+        Test that LocalDatetime and datetime objects that compare equal have the same
+        hash.
+        """
+        foo = LocalDatetime.at(year=2026, month=3, day=22, hour=12, minute=1, second=5)
+        bar = LocalDatetime.at(2026, 3, 22, 12, 1, 5)
+        foo_datetime = datetime(2026, 3, 22, 12, 1, 5)
+
+        self.assertSymmetricEqual(foo, bar)
+        self.assertSymmetricEqual(foo, foo_datetime)
+
+        self.assertEqual(hash(foo), hash(bar))
+        self.assertEqual(hash(foo), hash(foo_datetime))
+
     def test_bool(self):
         self.assertIs(True, bool(LocalDatetime.min))
         self.assertIs(True, bool(LocalDatetime.max))
@@ -453,6 +468,25 @@ class UTCDatetimeTests(FourthTestCase):
 
         self.assertIsInstance(foo_hash, int)
         self.assertEqual(foo_hash, hash(foo._at))
+
+    def test_hash_and_eq(self):
+        """
+        Test that UTCDatetime and datetime objects that compare equal have the same hash
+        """
+        foo = UTCDatetime.at(year=2026, month=3, day=22, hour=12, minute=1, second=5)
+        bar = UTCDatetime.at(2026, 3, 22, 12, 1, 5)
+        foo_datetime = datetime(2026, 3, 22, 12, 1, 5, tzinfo=timezone.utc)
+        foo_datetime_offset = datetime(
+            2026, 3, 22, 17, 1, 5, tzinfo=timezone(timedelta(hours=5))
+        )
+
+        self.assertSymmetricEqual(foo, bar)
+        self.assertSymmetricEqual(foo, foo_datetime)
+        self.assertSymmetricEqual(foo, foo_datetime_offset)
+
+        self.assertEqual(hash(foo), hash(bar))
+        self.assertEqual(hash(foo), hash(foo_datetime))
+        self.assertEqual(hash(foo), hash(foo_datetime_offset))
 
     def test_bool(self):
         self.assertIs(True, bool(UTCDatetime.min))
