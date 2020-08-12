@@ -122,7 +122,7 @@ class BaseDatetime(metaclass=ABCMeta):
         minute: int = 0,
         second: int = 0,
         microsecond: int = 0,
-    ) -> NoReturn:
+    ) -> BaseDatetime:
         """
         Return a new instance at the specified date and time.
 
@@ -185,7 +185,7 @@ class BaseDatetime(metaclass=ABCMeta):
         return self._at.isoformat(sep=sep, timespec=timespec)
 
     @abstractmethod
-    def strftime(self, format_string: str) -> NoReturn:
+    def strftime(self, format_string: str) -> str:
         """
         Return a string representation of the Datetime, controlled by the format
         string. See datetime.datetime.strftime() for a list of the formatting options.
