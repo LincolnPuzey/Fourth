@@ -4,9 +4,6 @@ declared in __all__.
 
 TODO feature list:
 * spanning datetime type
-* Full type annotations
-* Full docstrings
-* type checking on CI?
 * setup changelog - semantic version statement
 * Docs
 """
