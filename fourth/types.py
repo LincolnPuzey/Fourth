@@ -8,13 +8,9 @@ __all__ = ("BaseDatetime", "LocalDatetime", "UTCDatetime")
 from abc import ABCMeta, abstractmethod
 from datetime import datetime, timezone
 from operator import ge, gt, le, lt
-from typing import Any, Callable, ClassVar, Literal, NoReturn, Union
+from typing import Any, Callable, ClassVar, NoReturn, Union
 
 from ._internal import contains_timezone
-
-TIMESPEC = Literal[
-    "auto", "hours", "minutes", "seconds", "milliseconds", "microseconds"
-]
 
 
 class BaseDatetime(metaclass=ABCMeta):
@@ -171,7 +167,7 @@ class BaseDatetime(metaclass=ABCMeta):
         """
         return self._at
 
-    def iso_format(self, *, sep: str = "T", timespec: TIMESPEC = "microseconds") -> str:
+    def iso_format(self, *, sep: str = "T", timespec: str = "microseconds") -> str:
         """
         Construct an ISO 8601 format string of the Datetime.
 
