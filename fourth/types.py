@@ -105,6 +105,23 @@ class BaseDatetime(metaclass=ABCMeta):
         else:
             return self.strftime(format_spec)
 
+    def __getstate__(self) -> datetime:
+        """
+        Called when the object is pickled.
+
+        :return: The content of the instance to pickle.
+        """
+        return self._at
+
+    def __setstate__(self, state: datetime) -> None:
+        """
+        Called with the result of self.__getstate__() when unpickling.
+
+        :param state: The self._at datetime instance that was pickled.
+        """
+        # use object.__setattr__ to get around pseudo immutability.
+        object.__setattr__(self, "_at", state)
+
     # Constructors
 
     @classmethod

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import pickle
 from datetime import datetime, timedelta, timezone
 from unittest import TestCase
 
@@ -222,6 +223,27 @@ class LocalDatetimeTests(FourthTestCase):
         self.assertIs(False, foo.__ge__(LocalDatetime.at(1990, 3, 6)))
         self.assertIs(True, foo.__ge__(foo))
         self.assertIs(True, foo.__ge__(LocalDatetime.at(1990, 3, 1)))
+
+    def test_getstate(self):
+        foo = LocalDatetime.now()
+
+        self.assertEqual(foo.__getstate__(), foo._at)
+
+    def test_setstate(self):
+        foo = LocalDatetime.now()
+        bar = datetime(2020, 8, 30)
+        self.assertNotEqual(foo._at, bar)
+
+        foo.__setstate__(bar)
+
+        self.assertEqual(foo._at, bar)
+
+    def test_pickle(self):
+        foo = LocalDatetime.now()
+
+        self.assertEqual(foo, pickle.loads(pickle.dumps(foo)))
+        for protocol in range(0, pickle.HIGHEST_PROTOCOL + 1):
+            self.assertEqual(foo, pickle.loads(pickle.dumps(foo, protocol=protocol)))
 
     def test_bool(self):
         self.assertIs(True, bool(LocalDatetime.min))
@@ -649,6 +671,27 @@ class UTCDatetimeTests(FourthTestCase):
         self.assertIs(False, foo.__ge__(UTCDatetime.at(1990, 3, 6)))
         self.assertIs(True, foo.__ge__(foo))
         self.assertIs(True, foo.__ge__(UTCDatetime.at(1990, 3, 1)))
+
+    def test_getstate(self):
+        foo = UTCDatetime.now()
+
+        self.assertEqual(foo.__getstate__(), foo._at)
+
+    def test_setstate(self):
+        foo = UTCDatetime.now()
+        bar = datetime(2020, 8, 30, tzinfo=timezone.utc)
+        self.assertNotEqual(foo._at, bar)
+
+        foo.__setstate__(bar)
+
+        self.assertEqual(foo._at, bar)
+
+    def test_pickle(self):
+        foo = UTCDatetime.now()
+
+        self.assertEqual(foo, pickle.loads(pickle.dumps(foo)))
+        for protocol in range(0, pickle.HIGHEST_PROTOCOL + 1):
+            self.assertEqual(foo, pickle.loads(pickle.dumps(foo, protocol=protocol)))
 
     def test_bool(self):
         self.assertIs(True, bool(UTCDatetime.min))
