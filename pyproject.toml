@@ -23,6 +23,3 @@ add_imports = ['from __future__ import annotations']
 [tool.coverage.run]
 branch = true
 source = ['fourth']
-
-[tool.coverage.report]
-omit = ['tests/*']
