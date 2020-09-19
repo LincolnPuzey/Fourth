@@ -18,6 +18,7 @@ script:
   - coverage run -m unittest
 
 after_success:
+  - coverage xml
   - codecov --file .coverage/coverage.xml
 
 deploy:
