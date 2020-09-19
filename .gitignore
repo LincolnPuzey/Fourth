@@ -15,7 +15,6 @@ fourth.egg-info
 
 # coverage files
 .coverage
-coverage.xml
 
 # mypy
 .mypy_cache

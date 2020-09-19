@@ -23,3 +23,13 @@ add_imports = ['from __future__ import annotations']
 [tool.coverage.run]
 branch = true
 source = ['fourth']
+data_file = '.coverage/coverage.sqlite3'
+
+[tool.coverage.html]
+directory = '.coverage/htmlcov'
+
+[tool.coverage.xml]
+output = '.coverage/coverage.xml'
+
+[tool.coverage.json]
+output = '.coverage/coverage.json'
