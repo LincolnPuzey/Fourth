@@ -6,7 +6,7 @@ from __future__ import annotations
 __all__ = ("BaseDatetime", "LocalDatetime", "UTCDatetime")
 
 from abc import ABCMeta, abstractmethod
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from operator import ge, gt, le, lt
 from typing import Any, Callable, ClassVar, NoReturn, Union
 
@@ -300,6 +300,52 @@ class LocalDatetime(BaseDatetime):
 
     def __ge__(self, other: Any) -> Union[bool, NotImplemented]:
         return self._rich_compare(other, ge)
+
+    # Numeric Methods
+
+    def __add__(self, other: Any) -> Union[LocalDatetime, NotImplemented]:
+        """
+        Add a LocalDatetime and a timedelta.
+
+        :param other: The timedelta to add to.
+        :return: A LocalDatetime which is the result.
+        """
+        if isinstance(other, timedelta):
+            return LocalDatetime(self._at + other)
+        else:
+            return NotImplemented
+
+    __radd__ = __add__
+
+    def __sub__(self, other: Any) -> Union[LocalDatetime, timedelta, NotImplemented]:
+        """
+        Subtract a LocalDatetime instance, or a naive datetime, or a timedelta,
+        from this LocalDatetime.
+
+        :param other: The object being subtracted from this.
+        :return: Either a timedelta of the difference between two datetimes,
+            or a LocalDatetime.
+        """
+        if isinstance(other, LocalDatetime):
+            return self._at - other._at
+        elif isinstance(other, datetime) and other.tzinfo is None:
+            return self._at - other
+        elif isinstance(other, timedelta):
+            return LocalDatetime(self._at - other)
+        else:
+            return NotImplemented
+
+    def __rsub__(self, other: Any) -> Union[LocalDatetime, NotImplemented]:
+        """
+        Subtract this LocalDatetime from a naive datetime.
+
+        :param other: The naive datetime.
+        :return: A timedelta of the difference between the datetimes.
+        """
+        if isinstance(other, datetime) and other.tzinfo is None:
+            return other - self._at
+        else:
+            return NotImplemented
 
     # Constructors
 

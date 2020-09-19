@@ -224,6 +224,86 @@ class LocalDatetimeTests(FourthTestCase):
         self.assertIs(True, foo.__ge__(foo))
         self.assertIs(True, foo.__ge__(LocalDatetime.at(1990, 3, 1)))
 
+    def test_add(self):
+        foo = LocalDatetime.at(2020, 9, 5)
+
+        self.assertIs(NotImplemented, foo.__add__("bar"))
+
+        foo_added = foo.__add__(timedelta(hours=12))
+        self.assertIsInstance(foo_added, LocalDatetime)
+        self.assertEqual(foo_added, LocalDatetime.at(2020, 9, 5, 12))
+
+        foo_added_negative = foo.__add__(timedelta(hours=-18))
+        self.assertIsInstance(foo_added_negative, LocalDatetime)
+        self.assertEqual(foo_added_negative, LocalDatetime.at(2020, 9, 4, 6))
+
+    def test_radd(self):
+        foo = LocalDatetime.at(2020, 9, 5)
+
+        self.assertIs(NotImplemented, foo.__radd__("bar"))
+
+        foo_added = foo.__radd__(timedelta(hours=12))
+        self.assertIsInstance(foo_added, LocalDatetime)
+        self.assertEqual(foo_added, LocalDatetime.at(2020, 9, 5, 12))
+
+        foo_added_negative = foo.__radd__(timedelta(hours=-18))
+        self.assertIsInstance(foo_added_negative, LocalDatetime)
+        self.assertEqual(foo_added_negative, LocalDatetime.at(2020, 9, 4, 6))
+
+    def test_addition(self):
+        self.assertEqual(
+            LocalDatetime.at(2020, 9, 5) + timedelta(minutes=59),
+            LocalDatetime.at(2020, 9, 5, 0, 59),
+        )
+        self.assertEqual(
+            timedelta(days=3, hours=2) + LocalDatetime.at(2020, 9, 5),
+            LocalDatetime.at(2020, 9, 8, 2),
+        )
+
+    def test_sub(self):
+        foo = LocalDatetime.at(2020, 9, 5)
+
+        self.assertIs(NotImplemented, foo.__sub__("bar"))
+        self.assertIs(
+            NotImplemented, foo.__sub__(datetime(1990, 3, 4, tzinfo=timezone.utc))
+        )
+
+        self.assertEqual(
+            foo.__sub__(LocalDatetime.at(2020, 9, 3, 4)), timedelta(days=1, hours=20)
+        )
+        self.assertEqual(
+            foo.__sub__(datetime(2020, 9, 3, 4)), timedelta(days=1, hours=20)
+        )
+        foo_subbed = foo.__sub__(timedelta(hours=25))
+        self.assertIsInstance(foo_subbed, LocalDatetime)
+        self.assertEqual(foo_subbed, LocalDatetime.at(2020, 9, 3, 23))
+
+    def test_rsub(self):
+        foo = LocalDatetime.at(2020, 9, 19)
+
+        self.assertIs(NotImplemented, foo.__rsub__("bar"))
+        self.assertIs(
+            NotImplemented, foo.__rsub__(datetime(1990, 3, 4, tzinfo=timezone.utc))
+        )
+
+        diff = foo.__rsub__(datetime(2020, 9, 21, 4))
+        self.assertIsInstance(diff, timedelta)
+        self.assertEqual(diff, timedelta(days=2, hours=4))
+
+    def test_substitution(self):
+        foo = LocalDatetime.at(2020, 9, 19)
+        bar = LocalDatetime.at(2020, 9, 17)
+
+        dat = datetime(2020, 9, 17)
+
+        self.assertEqual(foo - bar, timedelta(days=2))
+        self.assertEqual(bar - foo, timedelta(days=-2))
+
+        self.assertEqual(foo - dat, timedelta(days=2))
+        self.assertEqual(dat - foo, timedelta(days=-2))
+
+        self.assertEqual(foo - timedelta(days=2), bar)
+
     def test_getstate(self):
         foo = LocalDatetime.now()
 
