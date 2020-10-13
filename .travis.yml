@@ -20,6 +20,7 @@ jobs:
     - name: coverage
       script:
         - coverage run -m unittest
+        - coverage report
         - coverage xml
         - codecov --file .coverage/coverage.xml
 
