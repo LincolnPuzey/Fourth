@@ -17,16 +17,17 @@ jobs:
       script: isort . --check-only --diff
     - name: mypy
       script: mypy fourth
+    - name: coverage
+      script:
+        - coverage run -m unittest
+        - coverage xml
+        - codecov --file .coverage/coverage.xml
 
 install:
   - pip install -r test-requirements.txt
 
 script:
-  - coverage run -m unittest
-
-after_success:
-  - coverage xml
-  - codecov --file .coverage/coverage.xml
+  - python -m unittest
 
 deploy:
   provider: pypi
