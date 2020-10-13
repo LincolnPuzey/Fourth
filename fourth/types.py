@@ -241,7 +241,7 @@ class LocalDatetime(BaseDatetime):
 
         super().__init__(at)
 
-    def __eq__(self, other: Any) -> Union[bool, NotImplemented]:
+    def __eq__(self, other: Any) -> bool:
         """
         A LocalDateTime can be equal to other LocalDateTime instances and
         datetime.datetime instances that are naive.
@@ -268,9 +268,7 @@ class LocalDatetime(BaseDatetime):
 
     # Rich Comparison Methods
 
-    def _rich_compare(
-        self, other: Any, compare: Callable[[Any, Any], Union[bool, NotImplemented]]
-    ) -> Union[bool, NotImplemented]:
+    def _rich_compare(self, other: Any, compare: Callable[[Any, Any], bool]) -> bool:
         """
         Do a rich comparison with other. This method contains the common logic for all
         the rich comparisons.
@@ -289,21 +287,21 @@ class LocalDatetime(BaseDatetime):
         else:
             return NotImplemented
 
-    def __lt__(self, other: Any) -> Union[bool, NotImplemented]:
+    def __lt__(self, other: Any) -> bool:
         return self._rich_compare(other, lt)
 
-    def __le__(self, other: Any) -> Union[bool, NotImplemented]:
+    def __le__(self, other: Any) -> bool:
         return self._rich_compare(other, le)
 
-    def __gt__(self, other: Any) -> Union[bool, NotImplemented]:
+    def __gt__(self, other: Any) -> bool:
         return self._rich_compare(other, gt)
 
-    def __ge__(self, other: Any) -> Union[bool, NotImplemented]:
+    def __ge__(self, other: Any) -> bool:
         return self._rich_compare(other, ge)
 
     # Numeric Methods
 
-    def __add__(self, other: Any) -> Union[LocalDatetime, NotImplemented]:
+    def __add__(self, other: Any) -> LocalDatetime:
         """
         Add a LocalDatetime and a timedelta.
 
@@ -317,7 +315,7 @@ class LocalDatetime(BaseDatetime):
 
     __radd__ = __add__
 
-    def __sub__(self, other: Any) -> Union[LocalDatetime, timedelta, NotImplemented]:
+    def __sub__(self, other: Any) -> Union[LocalDatetime, timedelta]:
         """
         Subtract a LocalDatetime instance, or a naive datetime, or a timedelta,
         from this LocalDatetime.
@@ -335,7 +333,7 @@ class LocalDatetime(BaseDatetime):
         else:
             return NotImplemented
 
-    def __rsub__(self, other: Any) -> Union[LocalDatetime, NotImplemented]:
+    def __rsub__(self, other: Any) -> timedelta:
         """
         Subtract this LocalDatetime from a naive datetime.
 
@@ -496,7 +494,7 @@ class UTCDatetime(BaseDatetime):
 
         super().__init__(at)
 
-    def __eq__(self, other: Any) -> Union[bool, NotImplemented]:
+    def __eq__(self, other: Any) -> bool:
         """
         A UTCDateTime can be equal to other UTCDateTime instances and
         datetime.datetime instances that are aware.
@@ -523,9 +521,7 @@ class UTCDatetime(BaseDatetime):
 
     # Rich Comparison Methods
 
-    def _rich_compare(
-        self, other: Any, compare: Callable[[Any, Any], Union[bool, NotImplemented]]
-    ) -> Union[bool, NotImplemented]:
+    def _rich_compare(self, other: Any, compare: Callable[[Any, Any], bool]) -> bool:
         """
         Do a rich comparison with other. This method contains the common logic for all
         the rich comparisons.
@@ -544,16 +540,16 @@ class UTCDatetime(BaseDatetime):
         else:
             return NotImplemented
 
-    def __lt__(self, other: Any) -> Union[bool, NotImplemented]:
+    def __lt__(self, other: Any) -> bool:
         return self._rich_compare(other, lt)
 
-    def __le__(self, other: Any) -> Union[bool, NotImplemented]:
+    def __le__(self, other: Any) -> bool:
         return self._rich_compare(other, le)
 
-    def __gt__(self, other: Any) -> Union[bool, NotImplemented]:
+    def __gt__(self, other: Any) -> bool:
         return self._rich_compare(other, gt)
 
-    def __ge__(self, other: Any) -> Union[bool, NotImplemented]:
+    def __ge__(self, other: Any) -> bool:
         return self._rich_compare(other, ge)
 
     # Constructors
