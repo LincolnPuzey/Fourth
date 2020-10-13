@@ -11,14 +11,17 @@ jobs:
   include:
     - name: pyflakes
       script: pyflakes fourth tests setup.py
+    - name: black
+      script: black --check --diff fourth tests setup.py
+    - name: isort
+      script: isort . --check-only --diff
+    - name: mypy
+      script: mypy fourth
 
 install:
   - pip install -r test-requirements.txt
 
 script:
-  - black --check --diff fourth tests setup.py
-  - isort . --check-only --diff
-  - mypy fourth
   - coverage run -m unittest
 
 after_success:
