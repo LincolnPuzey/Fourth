@@ -552,6 +552,52 @@ class UTCDatetime(BaseDatetime):
     def __ge__(self, other: Any) -> bool:
         return self._rich_compare(other, ge)
 
+    # Numeric Methods
+
+    def __add__(self, other: Any) -> UTCDatetime:
+        """
+        Add a UTCDatetime and a timedelta.
+
+        :param other: The timedelta to add to.
+        :return: A UTCDatetime which is the result.
+        """
+        if isinstance(other, timedelta):
+            return UTCDatetime(self._at + other)
+        else:
+            return NotImplemented
+
+    __radd__ = __add__
+
+    def __sub__(self, other: Any) -> Union[UTCDatetime, timedelta]:
+        """
+        Subtract a UTCDatetime instance, or an aware datetime, or a timedelta,
+        from this UTCDatetime.
+
+        :param other: The object being subtracted from this.
+        :return: Either a timedelta of the difference between two datetimes,
+            or a UTCDatetime.
+        """
+        if isinstance(other, UTCDatetime):
+            return self._at - other._at
+        elif isinstance(other, datetime) and other.tzinfo is not None:
+            return self._at - other
+        elif isinstance(other, timedelta):
+            return UTCDatetime(self._at - other)
+        else:
+            return NotImplemented
+
+    def __rsub__(self, other: Any) -> timedelta:
+        """
+        Subtract this UTCDatetime from an aware datetime.
+
+        :param other: The aware datetime.
+        :return: A timedelta of the difference between the datetimes.
+        """
+        if isinstance(other, datetime) and other.tzinfo is not None:
+            return other - self._at
+        else:
+            return NotImplemented
+
     # Constructors
 
     @classmethod

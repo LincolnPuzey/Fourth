@@ -752,6 +752,83 @@ class UTCDatetimeTests(FourthTestCase):
         self.assertIs(True, foo.__ge__(foo))
         self.assertIs(True, foo.__ge__(UTCDatetime.at(1990, 3, 1)))
 
+    def test_add(self):
+        foo = UTCDatetime.at(2020, 9, 5)
+
+        self.assertIs(NotImplemented, foo.__add__("bar"))
+
+        foo_added = foo.__add__(timedelta(hours=12))
+        self.assertIsInstance(foo_added, UTCDatetime)
+        self.assertEqual(foo_added, UTCDatetime.at(2020, 9, 5, 12))
+
+        foo_added_negative = foo.__add__(timedelta(hours=-18))
+        self.assertIsInstance(foo_added_negative, UTCDatetime)
+        self.assertEqual(foo_added_negative, UTCDatetime.at(2020, 9, 4, 6))
+
+    def test_radd(self):
+        foo = UTCDatetime.at(2020, 9, 5)
+
+        self.assertIs(NotImplemented, foo.__radd__("bar"))
+
+        foo_added = foo.__radd__(timedelta(hours=12))
+        self.assertIsInstance(foo_added, UTCDatetime)
+        self.assertEqual(foo_added, UTCDatetime.at(2020, 9, 5, 12))
+
+        foo_added_negative = foo.__radd__(timedelta(hours=-18))
+        self.assertIsInstance(foo_added_negative, UTCDatetime)
+        self.assertEqual(foo_added_negative, UTCDatetime.at(2020, 9, 4, 6))
+
+    def test_addition(self):
+        self.assertEqual(
+            UTCDatetime.at(2020, 9, 5) + timedelta(minutes=59),
+            UTCDatetime.at(2020, 9, 5, 0, 59),
+        )
+        self.assertEqual(
+            timedelta(days=3, hours=2) + UTCDatetime.at(2020, 9, 5),
+            UTCDatetime.at(2020, 9, 8, 2),
+        )
+
+    def test_sub(self):
+        foo = UTCDatetime.at(2020, 9, 5)
+
+        self.assertIs(NotImplemented, foo.__sub__("bar"))
+        self.assertIs(NotImplemented, foo.__sub__(datetime(1990, 3, 4)))
+
+        self.assertEqual(
+            foo.__sub__(UTCDatetime.at(2020, 9, 3, 4)), timedelta(days=1, hours=20)
+        )
+        self.assertEqual(
+            foo.__sub__(datetime(2020, 9, 3, 4, tzinfo=timezone.utc)),
+            timedelta(days=1, hours=20),
+        )
+        foo_subbed = foo.__sub__(timedelta(hours=25))
+        self.assertIsInstance(foo_subbed, UTCDatetime)
+        self.assertEqual(foo_subbed, UTCDatetime.at(2020, 9, 3, 23))
+
+    def test_rsub(self):
+        foo = UTCDatetime.at(2020, 9, 19)
+
+        self.assertIs(NotImplemented, foo.__rsub__("bar"))
+        self.assertIs(NotImplemented, foo.__rsub__(datetime(1990, 3, 4)))
+
+        diff = foo.__rsub__(datetime(2020, 9, 21, 4, tzinfo=timezone.utc))
+        self.assertIsInstance(diff, timedelta)
+        self.assertEqual(diff, timedelta(days=2, hours=4))
+
+    def test_substitution(self):
+        foo = UTCDatetime.at(2020, 9, 19)
+        bar = UTCDatetime.at(2020, 9, 17)
+
+        dat = datetime(2020, 9, 17, tzinfo=timezone.utc)
+
+        self.assertEqual(foo - bar, timedelta(days=2))
+        self.assertEqual(bar - foo, timedelta(days=-2))
+
+        self.assertEqual(foo - dat, timedelta(days=2))
+        self.assertEqual(dat - foo, timedelta(days=-2))
+
+        self.assertEqual(foo - timedelta(days=2), bar)
+
     def test_getstate(self):
         foo = UTCDatetime.now()
 
