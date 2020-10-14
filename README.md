@@ -2,6 +2,7 @@
 
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/fourth)
 [![PyPI](https://img.shields.io/pypi/v/fourth.svg)](https://pypi.org/project/fourth/)
+[![PyPI - Status](https://img.shields.io/pypi/status/fourth)](https://pypi.org/project/fourth/)
 [![Build Status](https://travis-ci.com/LincolnPuzey/Fourth.svg?branch=master)](https://travis-ci.com/LincolnPuzey/Fourth)
 [![codecov](https://codecov.io/gh/LincolnPuzey/Fourth/branch/master/graph/badge.svg)](https://codecov.io/gh/LincolnPuzey/Fourth)
 [![Checked with mypy](http://www.mypy-lang.org/static/mypy_badge.svg)](http://mypy-lang.org/)
