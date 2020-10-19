@@ -27,6 +27,8 @@ jobs:
 install:
   - pip install -r test-requirements.txt
 
+cache: pip
+
 script:
   - python -m unittest
 
