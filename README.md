@@ -1,6 +1,6 @@
 # Fourth
 
-![PyPI - Python Version](https://img.shields.io/pypi/pyversions/fourth)
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/fourth)](https://www.python.org/)
 [![PyPI](https://img.shields.io/pypi/v/fourth.svg)](https://pypi.org/project/fourth/)
 [![PyPI - Status](https://img.shields.io/pypi/status/fourth)](https://pypi.org/project/fourth/)
 [![Build Status](https://travis-ci.com/LincolnPuzey/Fourth.svg?branch=master)](https://travis-ci.com/LincolnPuzey/Fourth)
