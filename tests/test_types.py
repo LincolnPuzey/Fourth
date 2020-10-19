@@ -16,13 +16,13 @@ class BaseDatetimeTests(TestCase):
 
     def test_cant_be_instantiated(self):
         with self.assertRaisesRegex(
-            TypeError, r"^Can't instantiate abstract class BaseDatetime",
+            TypeError, r"^Can't instantiate abstract class BaseDatetime"
         ):
             BaseDatetime(datetime.now())
 
     def test_at_not_implemented(self):
         with self.assertRaisesRegex(
-            NotImplementedError, r"^BaseDatetime does not implement at\(\)$",
+            NotImplementedError, r"^BaseDatetime does not implement at\(\)$"
         ):
             BaseDatetime.at(year=2010, month=1, day=1)
 
@@ -31,7 +31,7 @@ class BaseDatetimeTests(TestCase):
         foo = LocalDatetime.now()
 
         with self.assertRaisesRegex(
-            NotImplementedError, r"does not implement strftime\(\)$",
+            NotImplementedError, r"does not implement strftime\(\)$"
         ):
             BaseDatetime.strftime(foo, "%Y")
 
@@ -42,9 +42,7 @@ class LocalDatetimeTests(FourthTestCase):
 
     def test_class_attributes(self):
         self.assertTrue(hasattr(LocalDatetime, "min"))
-        self.assertEqual(
-            LocalDatetime.min, LocalDatetime.at(1, 1, 1, 0, 0, 0, 0),
-        )
+        self.assertEqual(LocalDatetime.min, LocalDatetime.at(1, 1, 1, 0, 0, 0, 0))
         self.assertTrue(hasattr(LocalDatetime, "max"))
         self.assertEqual(
             LocalDatetime.max, LocalDatetime.at(9999, 12, 31, 23, 59, 59, 999999)
@@ -86,9 +84,7 @@ class LocalDatetimeTests(FourthTestCase):
     def test_repr(self):
         foo = LocalDatetime.at(2020, 11, 12, 8, 36, 42, 433677)
 
-        self.assertEqual(
-            repr(foo), "LocalDatetime.at(2020, 11, 12, 8, 36, 42, 433677)",
-        )
+        self.assertEqual(repr(foo), "LocalDatetime.at(2020, 11, 12, 8, 36, 42, 433677)")
 
     def test_eval_repr(self):
         foo = LocalDatetime.at(2020, 9, 20, 4, 56, 43, 333677)
@@ -98,9 +94,7 @@ class LocalDatetimeTests(FourthTestCase):
     def test_str(self):
         foo = LocalDatetime.at(year=2020, month=1, day=1)
 
-        self.assertEqual(
-            str(foo), "2020-01-01T00:00:00.000000",
-        )
+        self.assertEqual(str(foo), "2020-01-01T00:00:00.000000")
 
     def test_format(self):
         foo = LocalDatetime.at(1994, 6, 3, 22, 53, 57, 117000)
@@ -392,9 +386,7 @@ class LocalDatetimeTests(FourthTestCase):
         with self.assertRaisesRegex(
             ValueError, r"^strptime: date_string contained tz info$"
         ):
-            LocalDatetime.strptime(
-                "2020/05/22 12:02:04 +1030", "%Y/%m/%d %H:%M:%S %z",
-            )
+            LocalDatetime.strptime("2020/05/22 12:02:04 +1030", "%Y/%m/%d %H:%M:%S %z")
 
     def test_properties(self):
         foo = LocalDatetime.at(2020, 2, 3, 14, 44, 33, 123)
@@ -415,27 +407,21 @@ class LocalDatetimeTests(FourthTestCase):
     def test_iso_format(self):
         foo = LocalDatetime.at(year=2020, month=1, day=1)
 
-        self.assertEqual(
-            foo.iso_format(), "2020-01-01T00:00:00.000000",
-        )
+        self.assertEqual(foo.iso_format(), "2020-01-01T00:00:00.000000")
 
     def test_iso_format_custom(self):
         foo = LocalDatetime.at(year=2020, month=1, day=1)
 
         self.assertEqual(
-            foo.iso_format(sep=" ", timespec="auto"), "2020-01-01 00:00:00",
+            foo.iso_format(sep=" ", timespec="auto"), "2020-01-01 00:00:00"
         )
 
     def test_iso_format_roundtrip(self):
         foo = LocalDatetime.at(2020, 7, 19, 23, 34, 59, 341000)
-        self.assertEqual(
-            foo, LocalDatetime.from_iso_format(foo.iso_format()),
-        )
+        self.assertEqual(foo, LocalDatetime.from_iso_format(foo.iso_format()))
 
         bar = "1994-12-01T02:45:03.040507"
-        self.assertEqual(
-            bar, LocalDatetime.from_iso_format(bar).iso_format(),
-        )
+        self.assertEqual(bar, LocalDatetime.from_iso_format(bar).iso_format())
 
     def test_strftime(self):
         foo = LocalDatetime.at(2030, 4, 5)
@@ -521,7 +507,7 @@ class UTCDatetimeTests(FourthTestCase):
         self.assertEqual(UTCDatetime.min, UTCDatetime.at(1, 1, 1, 0, 0, 0, 0))
         self.assertTrue(hasattr(UTCDatetime, "max"))
         self.assertEqual(
-            UTCDatetime.max, UTCDatetime.at(9999, 12, 31, 23, 59, 59, 999999),
+            UTCDatetime.max, UTCDatetime.at(9999, 12, 31, 23, 59, 59, 999999)
         )
 
     def test_init(self):
@@ -560,9 +546,7 @@ class UTCDatetimeTests(FourthTestCase):
     def test_repr(self):
         foo = UTCDatetime.at(2020, 11, 12, 8, 36, 42, 433677)
 
-        self.assertEqual(
-            repr(foo), "UTCDatetime.at(2020, 11, 12, 8, 36, 42, 433677)",
-        )
+        self.assertEqual(repr(foo), "UTCDatetime.at(2020, 11, 12, 8, 36, 42, 433677)")
 
     def test_eval_repr(self):
         foo = UTCDatetime.at(2020, 9, 20, 4, 56, 43, 333677)
@@ -572,9 +556,7 @@ class UTCDatetimeTests(FourthTestCase):
     def test_str(self):
         foo = UTCDatetime.at(year=2020, month=1, day=1)
 
-        self.assertEqual(
-            str(foo), "2020-01-01T00:00:00.000000+00:00",
-        )
+        self.assertEqual(str(foo), "2020-01-01T00:00:00.000000+00:00")
 
     def test_format(self):
         foo = UTCDatetime.at(1994, 6, 3, 22, 53, 57, 117000)
@@ -867,7 +849,7 @@ class UTCDatetimeTests(FourthTestCase):
 
     def test_at_constructor_all_args(self):
         foo = UTCDatetime.at(
-            year=2020, month=1, day=2, hour=3, minute=4, second=5, microsecond=6,
+            year=2020, month=1, day=2, hour=3, minute=4, second=5, microsecond=6
         )
 
         self.assertIsInstance(foo, UTCDatetime)
@@ -941,9 +923,7 @@ class UTCDatetimeTests(FourthTestCase):
         with self.assertRaisesRegex(
             ValueError, r"^strptime: date_string didn't contain tz info$"
         ):
-            UTCDatetime.strptime(
-                "2020/05/22 12:02:04", "%Y/%m/%d %H:%M:%S",
-            )
+            UTCDatetime.strptime("2020/05/22 12:02:04", "%Y/%m/%d %H:%M:%S")
 
     def test_properties(self):
         foo = UTCDatetime.at(2020, 2, 3, 14, 44, 33, 123)
@@ -967,9 +947,7 @@ class UTCDatetimeTests(FourthTestCase):
     def test_iso_format(self):
         foo = UTCDatetime.at(year=2020, month=1, day=1)
 
-        self.assertEqual(
-            foo.iso_format(), "2020-01-01T00:00:00.000000+00:00",
-        )
+        self.assertEqual(foo.iso_format(), "2020-01-01T00:00:00.000000+00:00")
 
     def test_iso_format_custom(self):
         foo = UTCDatetime.at(year=2020, month=1, day=1)
@@ -980,14 +958,10 @@ class UTCDatetimeTests(FourthTestCase):
 
     def test_iso_format_roundtrip(self):
         foo = UTCDatetime.at(2020, 7, 19, 23, 34, 59, 341000)
-        self.assertEqual(
-            foo, UTCDatetime.from_iso_format(foo.iso_format()),
-        )
+        self.assertEqual(foo, UTCDatetime.from_iso_format(foo.iso_format()))
 
         bar = "1994-12-01T02:45:03.040507+00:00"
-        self.assertEqual(
-            bar, UTCDatetime.from_iso_format(bar).iso_format(),
-        )
+        self.assertEqual(bar, UTCDatetime.from_iso_format(bar).iso_format())
 
     def test_strftime(self):
         foo = UTCDatetime.at(2030, 4, 5)
